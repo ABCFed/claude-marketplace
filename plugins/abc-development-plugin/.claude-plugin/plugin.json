@@ -1,0 +1,14 @@
+{
+  "name": "abc-development-plugin",
+  "version": "0.1.0",
+  "description": "Assist with ABC development flow",
+  "author": {
+    "name": "ABC Team",
+    "email": "bubble@abcyun.cn"
+  },
+  "license": "MIT",
+  "keywords": [
+    "keyword1",
+    "keyword2"
+  ]
+}
