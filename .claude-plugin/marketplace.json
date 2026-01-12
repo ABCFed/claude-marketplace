@@ -1,0 +1,37 @@
+{
+  "name": "my-team-plugin-marketplace",
+  "owner": {
+    "name": "Your Organization",
+    "email": "team@your-org.com"
+  },
+  "metadata": {
+    "description": "A curated collection of Claude Code plugins for our team",
+    "version": "1.3.0"
+  },
+  "plugins": [
+    {
+      "name": "hello-world",
+      "description": "A simple example plugin demonstrating basic Claude Code plugin functionality",
+      "version": "1.0.0",
+      "author": {
+        "name": "Your Team"
+      },
+      "source": "./plugins/hello-world",
+      "category": "examples",
+      "tags": ["example", "tutorial", "getting-started"],
+      "keywords": ["example", "tutorial", "getting-started"]
+    },
+    {
+      "name": "plugin-development",
+      "description": "Assist with Claude Code plugin development: scaffold, validate, review, and team-ready distribution",
+      "version": "1.3.0",
+      "author": {
+        "name": "Ivan Magda"
+      },
+      "source": "./plugins/plugin-development",
+      "category": "developer-tools",
+      "tags": ["development", "plugins", "scaffold", "validation", "tools"],
+      "keywords": ["claude-code", "plugins", "developer-tools", "scaffold", "validation"]
+    }
+  ]
+}

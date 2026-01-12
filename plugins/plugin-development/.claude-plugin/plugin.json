@@ -1,0 +1,20 @@
+{
+  "name": "plugin-development",
+  "version": "1.3.0",
+  "description": "A comprehensive toolkit for creating, validating, and distributing Claude Code plugins",
+  "author": {
+    "name": "Ivan Magda",
+    "email": "ivan.magda@outlook.com",
+    "url": "https://github.com/ivan-magda"
+  },
+  "homepage": "https://github.com/ivan-magda/claude-code-plugin-template",
+  "repository": "https://github.com/ivan-magda/claude-code-plugin-template",
+  "license": "MIT",
+  "keywords": [
+    "plugin-development",
+    "plugin-authoring",
+    "cli-tools",
+    "validation",
+    "scaffolding"
+  ]
+}
