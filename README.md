@@ -38,6 +38,38 @@ claude
 
 安装后，tapd-skill 会自动激活。当您提到 TAPD、需求、缺陷、任务、迭代等关键词时，Claude 将自动使用该技能。
 
+## 配置环境变量
+
+使用 TAPD API 需要配置 `TAPD_ACCESS_TOKEN` 环境变量。
+
+### 获取 Access Token
+
+1. 登录 [TAPD](https://www.tapd.cn/)
+2. 进入「个人设置」→「个人令牌」
+3. 点击「创建个人令牌」
+4. 复制生成的 Token
+
+### 配置环境变量
+
+编辑 `~/.zshrc` 或 `~/.bashrc`：
+
+```bash
+export TAPD_ACCESS_TOKEN="your_token_here"
+```
+
+使配置生效：
+
+```bash
+source ~/.zshrc  # 或 source ~/.bashrc
+```
+
+### 验证配置
+
+```bash
+echo $TAPD_ACCESS_TOKEN
+# 应该显示您的 Token
+```
+
 ## 目录结构
 
 ```
