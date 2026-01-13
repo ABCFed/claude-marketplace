@@ -116,6 +116,10 @@ echo $APIFOX_ACCESS_TOKEN
 └── docs/                         # 文档
 ```
 
+## 贡献指南
+
+欢迎贡献代码、文档或新插件！请参阅 [CONTRIBUTING.md](CONTRIBUTING.md) 了解详情。
+
 ## 许可证
 
 MIT License - 详见 [LICENSE](LICENSE)
