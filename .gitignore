@@ -49,3 +49,4 @@ temp/
 *.zip
 *.tar.gz
 *.rar
+/.claude/settings.local.json
