@@ -154,28 +154,9 @@ description: 简短的 Skill 描述，说明做什么以及何时使用
 此处填写 Skill 的详细使用说明...
 ```
 
-### 步骤 4：更新插件清单
+### 步骤 4：验证并测试
 
-编辑 `.claude-plugin/plugin.json`，在 `skills` 数组中添加新技能：
-
-```json
-{
-  "skills": [
-    {
-      "name": "tapd",
-      "description": "TAPD 敏捷研发管理平台集成...",
-      "version": "0.1.0"
-    },
-    {
-      "name": "your-skill",
-      "description": "你的 Skill 描述",
-      "version": "0.1.0"
-    }
-  ]
-}
-```
-
-### 步骤 5：验证并测试
+插件会自动发现 `skills/` 目录下的技能，无需在 `plugin.json` 中额外配置。
 
 ```bash
 /plugin-development:validate
