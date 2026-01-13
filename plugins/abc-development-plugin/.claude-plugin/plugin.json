@@ -15,17 +15,5 @@
     "apifox",
     "abc",
     "development"
-  ],
-  "skills": [
-    {
-      "name": "tapd",
-      "description": "TAPD agile development platform integration - manage stories, bugs, tasks, iterations, test cases, Wiki, comments, timesheets, and relationships",
-      "version": "0.1.0"
-    },
-    {
-      "name": "apifox",
-      "description": "ABC Medical Cloud API documentation query - search and view OpenAPI specs (4000+ endpoints) with $ref resolution",
-      "version": "0.1.0"
-    }
   ]
 }
