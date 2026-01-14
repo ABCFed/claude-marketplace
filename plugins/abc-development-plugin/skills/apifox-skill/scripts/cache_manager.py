@@ -15,15 +15,22 @@ from pathlib import Path
 class CacheManager:
     """缓存管理器"""
 
-    CACHE_DIR = os.path.expanduser("~/.claude/skills/apifox-skill/cache")
-    CACHE_EXPIRY = 24 * 3600  # 24 小时
+    @staticmethod
+    def _default_cache_dir() -> str:
+        """获取默认缓存目录（插件 skill 目录下的 cache 文件夹）"""
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # scripts/cache_manager.py -> skills/apifox-skill/cache
+        return os.path.join(os.path.dirname(script_dir), "cache")
+
+    CACHE_DIR = _default_cache_dir.__func__()
+    CACHE_EXPIRY = 24 * 3600  # 已废弃，缓存永久有效
 
     def __init__(self, cache_dir: str = None):
         """
         初始化缓存管理器
 
         Args:
-            cache_dir: 缓存目录，默认为 ~/.claude/skills/apifox-skill/cache
+            cache_dir: 缓存目录，默认为插件目录下的 cache 文件夹
         """
         self.cache_dir = cache_dir or self.CACHE_DIR
         self._ensure_cache_dir()
@@ -38,22 +45,12 @@ class CacheManager:
         检查 OAS 缓存是否有效
 
         Returns:
-            缓存是否存在且未过期
+            缓存文件是否存在（缓存永久有效）
         """
         oas_file = os.path.join(self.cache_dir, "oas.json")
         meta_file = os.path.join(self.cache_dir, "oas_meta.json")
 
-        if not os.path.exists(oas_file) or not os.path.exists(meta_file):
-            return False
-
-        try:
-            with open(meta_file, 'r', encoding='utf-8') as f:
-                meta = json.load(f)
-
-            cached_at = meta.get('cached_at', 0)
-            return (time.time() - cached_at) < self.CACHE_EXPIRY
-        except Exception:
-            return False
+        return os.path.exists(oas_file) and os.path.exists(meta_file)
 
     def load_oas(self) -> Optional[Dict[str, Any]]:
         """

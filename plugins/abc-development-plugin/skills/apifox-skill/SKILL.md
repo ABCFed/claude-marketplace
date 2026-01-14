@@ -40,9 +40,8 @@ pip3 install requests
 apifox-skill 直接通过 HTTP 请求调用 Apifox API：
 
 1. **首次使用**：从 Apifox API 获取 OpenAPI 文档
-2. **本地缓存**：数据保存到 `~/.claude/skills/apifox-skill/cache/`
-3. **缓存有效期**：24 小时
-4. **自动刷新**：缓存过期后自动从 API 重新获取
+2. **本地缓存**：数据保存到插件目录下的 `cache/` 文件夹
+3. **缓存持久**：缓存永久有效，需要手动刷新获取最新文档
 
 ### 配置示例
 
@@ -160,7 +159,7 @@ python apifox.py stats --detail
 # 查看缓存状态
 python apifox.py cache_status
 
-# 刷新文档（显示当前状态，实际刷新需要 Claude 调用 MCP）
+# 刷新文档（强制从 API 重新获取最新数据）
 python apifox.py refresh_oas
 
 # 清除缓存
@@ -184,7 +183,7 @@ python apifox.py export_summary --output full_summary.json --format json
 ```json
 {
   "success": true,
-  "data": { ... }
+  "data": "返回的数据"
 }
 ```
 
@@ -219,9 +218,9 @@ Claude:
 
 ## 性能说明
 
-- **HTTP 请求**：首次使用或缓存过期时，通过 HTTP 请求从 Apifox API 获取
-- **本地缓存**：数据缓存到本地，后续使用无需网络请求
-- **缓存有效期**：24 小时，过期自动刷新
+- **HTTP 请求**：首次使用或手动刷新时，通过 HTTP 请求从 Apifox API 获取
+- **本地缓存**：数据缓存到插件目录，后续使用无需网络请求
+- **缓存持久**：缓存永久有效，需要手动刷新获取最新文档
 - **搜索性能**：基于内存索引，毫秒级响应
 
 ## 数据获取流程
