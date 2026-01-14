@@ -1,0 +1,17 @@
+#!/bin/sh
+# Apifox 统一命令行工具 - Shell Wrapper
+# 自动检测并使用可用的 Python 解释器 (python3 或 python)
+
+# 获取脚本所在目录
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# 依次尝试 python3 和 python
+if command -v python3 >/dev/null 2>&1; then
+    exec python3 "$SCRIPT_DIR/apifox.py" "$@"
+elif command -v python >/dev/null 2>&1; then
+    exec python "$SCRIPT_DIR/apifox.py" "$@"
+else
+    echo "错误: 未找到 Python 解释器" >&2
+    echo "请安装 Python 3: brew install python3 或 apt-get install python3" >&2
+    exit 1
+fi

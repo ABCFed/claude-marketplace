@@ -58,8 +58,10 @@ source ~/.bashrc  # 或 source ~/.zshrc
 
 ```bash
 cd ~/.claude/skills/apifox-skill/scripts
-python apifox.py <command> [参数]
+./apifox <command> [参数]
 ```
+
+> **兼容性说明**：`./apifox` 是一个 shell wrapper，会自动检测并使用系统中可用的 Python 解释器（python3 或 python），无需手动指定。
 
 所有命令默认返回 JSON 格式输出。
 
@@ -109,12 +111,12 @@ ABC 医疗云 API 文档包含以下模块：
 
 ```bash
 # 获取指定接口的完整定义
-python apifox.py get_path \
+./apifox get_path \
     --path "/api/global-auth/login/sms" \
     --method POST
 
 # 获取接口但不解析 $ref（更快）
-python apifox.py get_path \
+./apifox get_path \
     --path "/api/global-auth/login/sms" \
     --method POST \
     --include_refs false
@@ -124,56 +126,56 @@ python apifox.py get_path \
 
 ```bash
 # 搜索登录相关接口
-python apifox.py search_paths --keyword "login"
+./apifox search_paths --keyword "login"
 
 # 搜索 api 模块中的用户相关接口
-python apifox.py search_paths --keyword "user" --module api
+./apifox search_paths --keyword "user" --module api
 
 # 列出所有 POST 接口
-python apifox.py list_paths --method post --limit 20
+./apifox list_paths --method post --limit 20
 ```
 
 ### 模块查询
 
 ```bash
 # 列出所有模块及统计
-python apifox.py list_modules
+./apifox list_modules
 
 # 列出小程序接口（前 20 个）
-python apifox.py list_paths --module api-weapp --limit 20
+./apifox list_paths --module api-weapp --limit 20
 ```
 
 ### 统计信息
 
 ```bash
 # 查看基本统计
-python apifox.py stats
+./apifox stats
 
 # 查看详细统计（包含各模块详情）
-python apifox.py stats --detail
+./apifox stats --detail
 ```
 
 ### 缓存管理
 
 ```bash
 # 查看缓存状态
-python apifox.py cache_status
+./apifox cache_status
 
 # 刷新文档（强制从 API 重新获取最新数据）
-python apifox.py refresh_oas
+./apifox refresh_oas
 
 # 清除缓存
-python apifox.py clear_cache --force
+./apifox clear_cache --force
 ```
 
 ### 导出摘要
 
 ```bash
 # 导出所有 API 模块接口摘要到 Markdown
-python apifox.py export_summary --module api --output api_summary.md --format markdown
+./apifox export_summary --module api --output api_summary.md --format markdown
 
 # 导出为 JSON
-python apifox.py export_summary --output full_summary.json --format json
+./apifox export_summary --output full_summary.json --format json
 ```
 
 ## 输出格式
@@ -210,9 +212,9 @@ python apifox.py export_summary --output full_summary.json --format json
 用户: "查看短信登录接口的定义"
 
 Claude:
-1. python apifox.py search_paths --keyword "login sms"
+1. ./apifox search_paths --keyword "login sms"
 2. 从结果中找到相关接口路径
-3. python apifox.py get_path --path "/api/global-auth/login/sms" --method POST
+3. ./apifox get_path --path "/api/global-auth/login/sms" --method POST
 4. 分析返回的请求/响应结构
 ```
 
@@ -229,7 +231,7 @@ Claude:
 
 ```bash
 # 配置环境变量后首次运行
-python apifox.py stats
+./apifox stats
 
 # 输出示例：
 # 正在从 Apifox 获取项目 4105462 的 OpenAPI 文档...
@@ -242,7 +244,7 @@ python apifox.py stats
 
 ```bash
 # 从本地缓存加载，秒级响应
-python apifox.py stats
+./apifox stats
 # 从本地缓存加载 OpenAPI 数据...
 ```
 
@@ -250,7 +252,7 @@ python apifox.py stats
 
 ```bash
 # 强制从 API 重新获取最新文档
-python apifox.py refresh_oas
+./apifox refresh_oas
 
 # 输出示例：
 # 正在刷新 OpenAPI 文档...
@@ -262,7 +264,7 @@ python apifox.py refresh_oas
 ### 查看缓存状态
 
 ```bash
-python apifox.py cache_status
+./apifox cache_status
 ```
 
 ## 文件结构

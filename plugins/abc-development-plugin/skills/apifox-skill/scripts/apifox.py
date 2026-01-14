@@ -180,12 +180,12 @@ def build_parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
-  python apifox.py read_oas                    读取完整 OpenAPI 规范
-  python apifox.py list_paths --module api      列出 api 模块接口
-  python apifox.py search_paths --keyword login 搜索登录相关接口
-  python apifox.py get_path --path "/api/global-auth/login/sms" --method POST
-  python apifox.py stats --detail               查看详细统计
-  python apifox.py export_summary --module api --output api.md
+  ./apifox read_oas                    读取完整 OpenAPI 规范
+  ./apifox list_paths --module api      列出 api 模块接口
+  ./apifox search_paths --keyword login 搜索登录相关接口
+  ./apifox get_path --path "/api/global-auth/login/sms" --method POST
+  ./apifox stats --detail               查看详细统计
+  ./apifox export_summary --module api --output api.md
         """
     )
 
