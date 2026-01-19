@@ -28,7 +28,7 @@ cd ~/.claude/skills/tapd-skill/scripts
 python tapd.py <command> [参数]
 ```
 
-所有命令都支持 `--json` 参数输出 JSON 格式。
+所有命令默认输出 JSON 格式结果。
 
 ## 命令列表
 

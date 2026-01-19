@@ -1054,7 +1054,6 @@ def build_parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         add_help=False
     )
-    parser.add_argument("--json", action="store_true", help="输出 JSON 格式")
 
     subparsers = parser.add_subparsers(dest="command", title="命令")
 
