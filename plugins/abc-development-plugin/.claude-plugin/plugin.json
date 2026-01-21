@@ -1,6 +1,6 @@
 {
   "name": "abc-development-plugin",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Assist with ABC development flow",
   "author": {
     "name": "ABC Team",
@@ -13,6 +13,7 @@
     "project-management",
     "api-documentation",
     "apifox",
+    "codeup",
     "abc",
     "development"
   ]

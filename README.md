@@ -6,7 +6,12 @@
 
 ## abc-development-plugin
 
-ABC 敏捷研发管理平台集成插件，提供 TAPD 研发管理和 API 文档查询能力。
+ABC 敏捷研发管理平台集成插件，提供 TAPD 研发管理、API 文档查询和 Codeup 代码仓库管理能力。
+
+包含 3 个 Skill：
+1. **tapd-skill** - TAPD 敏捷研发管理（需求、缺陷、任务、迭代、测试用例等）
+2. **apifox-skill** - API 文档查询（ABC 医疗云 OpenAPI 规范）
+3. **codeup-skill** - Codeup 代码仓库管理（分支、文件、MR、组织成员等）
 
 ### 技能列表
 
@@ -32,6 +37,16 @@ ABC 医疗云 API 文档查询工具，读取和查询 ABC API 的 OpenAPI 规�
 - **统计分析** - 接口总数、模块分布、方法统计
 - **文档导出** - 导出 JSON/Markdown 摘要
 
+#### 3. codeup-skill
+阿里云云效 Codeup 代码仓库管理工具集，通过 Codeup API 管理代码仓库、分支、文件和合并请求。
+
+**功能特性**:
+- **仓库管理** - 查询仓库详情、列出仓库
+- **分支操作** - 创建、删除、列出分支
+- **文件操作** - 读取、创建、更新、删除文件，对比代码差异
+- **MR 管理** - 创建合并请求、添加评论、列出 MR 和补丁集
+- **组织管理** - 查询组织、部门、成员、角色信息
+
 ## 快速开始
 
 ### 安装插件市场
@@ -49,7 +64,10 @@ claude
 
 ### 使用插件
 
-安装后，tapd-skill 会自动激活。当您提到 TAPD、需求、缺陷、任务、迭代等关键词时，Claude 将自动使用该技能。
+安装后，所有 skill 会自动激活。当您提到相关关键词时，Claude 将自动使用对应技能：
+- **tapd-skill**: TAPD、需求、缺陷、任务、迭代、测试用例、Wiki、工时
+- **apifox-skill**: API、接口、Apifox、OpenAPI、接口文档
+- **codeup-skill**: Codeup、代码仓库、分支、MR、合并请求、阿里云、云效
 
 ## 配置环境变量
 
@@ -92,6 +110,25 @@ export APIFOX_ACCESS_TOKEN="your_apifox_token_here"
 export APIFOX_PROJECT_ID="4105462"  # 可选，默认为 4105462
 ```
 
+### codeup-skill 环境变量
+
+使用 Codeup API 需要配置 `ALIBABACLOUD_ACCESS_TOKEN` 环境变量。
+
+**获取 Access Token**:
+
+1. 访问 [云效访问令牌管理](https://account-devops.aliyun.com/settings/personalAccessToken)
+2. 点击「创建个人访问令牌」
+3. 选择权限范围（建议勾选「代码」相关权限）
+4. 复制生成的 Token
+
+**配置环境变量**:
+
+编辑 `~/.zshrc` 或 `~/.bashrc`：
+
+```bash
+export ALIBABACLOUD_ACCESS_TOKEN="your_codeup_token_here"
+```
+
 ### 使配置生效
 
 ```bash
@@ -103,6 +140,7 @@ source ~/.zshrc  # 或 source ~/.bashrc
 ```bash
 echo $TAPD_ACCESS_TOKEN
 echo $APIFOX_ACCESS_TOKEN
+echo $ALIBABACLOUD_ACCESS_TOKEN
 # 应该显示您的 Token
 ```
 
