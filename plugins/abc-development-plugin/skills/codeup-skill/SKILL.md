@@ -11,7 +11,7 @@ description: 阿里云云效 Codeup 代码仓库管理工具集。使用场景�
 
 使用前需要配置以下环境变量：
 ```bash
-export ALIBABACLOUD_ACCESS_TOKEN="你的个人访问令牌"
+export YUNXIAO_ACCESS_TOKEN="你的个人访问令牌"
 ```
 
 获取访问令牌：

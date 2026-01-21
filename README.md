@@ -112,7 +112,7 @@ export APIFOX_PROJECT_ID="4105462"  # 可选，默认为 4105462
 
 ### codeup-skill 环境变量
 
-使用 Codeup API 需要配置 `ALIBABACLOUD_ACCESS_TOKEN` 环境变量。
+使用 Codeup API 需要配置 `YUNXIAO_ACCESS_TOKEN` 环境变量。
 
 **获取 Access Token**:
 
@@ -126,7 +126,7 @@ export APIFOX_PROJECT_ID="4105462"  # 可选，默认为 4105462
 编辑 `~/.zshrc` 或 `~/.bashrc`：
 
 ```bash
-export ALIBABACLOUD_ACCESS_TOKEN="your_codeup_token_here"
+export YUNXIAO_ACCESS_TOKEN="your_codeup_token_here"
 ```
 
 ### 使配置生效
@@ -140,7 +140,7 @@ source ~/.zshrc  # 或 source ~/.bashrc
 ```bash
 echo $TAPD_ACCESS_TOKEN
 echo $APIFOX_ACCESS_TOKEN
-echo $ALIBABACLOUD_ACCESS_TOKEN
+echo $YUNXIAO_ACCESS_TOKEN
 # 应该显示您的 Token
 ```
 

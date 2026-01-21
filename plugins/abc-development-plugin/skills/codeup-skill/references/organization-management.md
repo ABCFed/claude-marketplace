@@ -58,7 +58,7 @@ python codeup.py list_roles --org_id <org_id>
 
 | 变量名 | 说明 |
 |--------|------|
-| `ALIBABACLOUD_ACCESS_TOKEN` | 访问令牌 (必填) |
+| `YUNXIAO_ACCESS_TOKEN` | 访问令牌 (必填) |
 
 ## 常见工作流
 
