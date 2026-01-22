@@ -5,11 +5,13 @@
 ### 获取当前用户
 
 ```bash
-# 获取当前用户（个人姓名）
 python codeup.py get_current_user
+```
 
-# 获取当前用户（指定组织，返回企业姓名）
-python codeup.py get_current_user --org_id <org_id>
+### 获取当前组织
+
+```bash
+python codeup.py get_current_organization
 ```
 
 ### 列出用户所属组织
@@ -37,18 +39,7 @@ python codeup.py get_department --org_id <org_id> --dept_id <dept_id>
 ### 列出组织成员
 
 ```bash
-python codeup.py list_members --org_id <org_id> \
-    [--name <member_name>] \
-    [--provider <third_party>] \
-    [--extern_uid <uid>] \
-    [--state normal|blocked|deleted] \
-    [--max_results 20]
-```
-
-### 获取成员详情
-
-```bash
-python codeup.py get_organization_member --org_id <org_id> --account_id <uid>
+python codeup.py list_members --org_id <org_id> [--page 1] [--limit 20]
 ```
 
 ### 搜索成员
@@ -74,8 +65,8 @@ python codeup.py list_roles --org_id <org_id>
 ### 1. 获取组织信息和成员列表
 
 ```bash
-# 获取组织列表
-python codeup.py list_organizations
+# 获取当前组织
+python codeup.py get_current_organization
 
 # 列出所有成员
 python codeup.py list_members --org_id <org_id>
@@ -87,14 +78,7 @@ python codeup.py list_members --org_id <org_id>
 python codeup.py search_members --org_id <org_id> --query "张三"
 ```
 
-### 3. 查看成员详情
-
-```bash
-# 获取特定成员信息
-python codeup.py get_organization_member --org_id <org_id> --account_id 123456789
-```
-
-### 4. 查看组织架构
+### 3. 查看组织架构
 
 ```bash
 # 列出部门

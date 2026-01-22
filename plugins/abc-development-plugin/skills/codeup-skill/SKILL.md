@@ -34,6 +34,7 @@ python codeup.py <command> [参数]
 | 命令 | 说明 |
 |------|------|
 | `get_current_user` | 获取当前用户信息 |
+| `get_current_organization` | 获取当前组织信息 |
 | `list_organizations` | 列出用户所属组织 |
 
 ### 部门与成员
@@ -42,7 +43,6 @@ python codeup.py <command> [参数]
 | `list_departments` | 列出部门 |
 | `get_department` | 获取部门详情 |
 | `list_members` | 列出组织成员 |
-| `get_organization_member` | 获取成员详情 |
 | `search_members` | 搜索成员 |
 | `list_roles` | 列出角色 |
 
@@ -88,8 +88,8 @@ python codeup.py <command> [参数]
 # 获取当前用户
 python codeup.py get_current_user
 
-# 获取当前用户（指定组织，返回企业姓名）
-python codeup.py get_current_user --org_id 5f9a8b7c6d8e1a2c3d4e5f6g
+# 获取当前组织
+python codeup.py get_current_organization
 
 # 列出用户所属组织
 python codeup.py list_organizations
@@ -106,12 +106,6 @@ python codeup.py get_department --org_id 5f9a8b7c6d8e1a2c3d4e5f6g --dept_id 1234
 
 # 列出所有成员
 python codeup.py list_members --org_id 5f9a8b7c6d8e1a2c3d4e5f6g
-
-# 列出成员（带筛选条件）
-python codeup.py list_members --org_id 5f9a8b7c6d8e1a2c3d4e5f6g --name "张三" --state normal
-
-# 获取成员详情
-python codeup.py get_organization_member --org_id 5f9a8b7c6d8e1a2c3d4e5f6g --account_id 123456789
 
 # 搜索成员
 python codeup.py search_members --org_id 5f9a8b7c6d8e1a2c3d4e5f6g --query "张三"
@@ -260,7 +254,7 @@ python codeup.py get_merge_request --org_id $ORG_ID --repo_id $REPO_ID --mr_id $
 
 当用户需要与云效交互时：
 
-1. **获取 org_id**：先调用 `list_organizations` 获取组织列表，选择组织 ID
+1. **获取 org_id**：先调用 `get_current_organization` 获取组织 ID
 2. **获取 repo_id**：调用 `list_repositories` 列出仓库，选择目标仓库
 3. **构建命令**：根据需求构建相应参数
 4. **执行脚本**：使用 Bash 工具运行
@@ -272,7 +266,7 @@ python codeup.py get_merge_request --org_id $ORG_ID --repo_id $REPO_ID --mr_id $
 
 Claude:
 1. cd ~/.claude/skills/codeup-skill/scripts
-2. python codeup.py list_organizations  # 获取 org_id
+2. python codeup.py get_current_organization  # 获取 org_id
 3. python codeup.py list_members --org_id $ORG_ID  # 列出成员
 4. 分析返回结果并展示
 ```
@@ -282,8 +276,8 @@ Claude:
 ### 1. 如何获取 org_id 和 repo_id？
 
 ```bash
-# 获取组织列表（包含 org_id）
-python codeup.py list_organizations
+# 获取当前组织信息（包含 org_id）
+python codeup.py get_current_organization
 
 # 列出仓库（包含 repo_id）
 python codeup.py list_repositories --org_id <org_id>
@@ -313,7 +307,7 @@ codeup-skill/
 │   ├── code-management.md       # 代码管理 API 参考
 │   └── organization-management.md  # 组织管理 API 参考
 └── scripts/
-    ├── codeup.py              # 统一入口脚本（26个子命令）
+    ├── codeup.py              # 统一入口脚本（27个子命令）
     ├── codeup_client.py       # Codeup API 客户端
     └── requirements.txt       # 依赖：requests>=2.28.0
 ```

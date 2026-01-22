@@ -58,21 +58,13 @@ class CodeupClient:
 
     # ==================== User & Organization ====================
 
-    def get_current_user(self, organization_id: str = None) -> dict:
-        """Get current user information
-
-        Args:
-            organization_id: Optional organization ID. Returns personal name if not provided,
-                           returns organization name if provided.
-        """
-        params = {}
-        if organization_id:
-            params["organizationId"] = organization_id
-        return self._make_request("GET", "/users/current", params=params if params else None)
+    def get_current_user(self) -> dict:
+        """Get current user information"""
+        return self._make_request("GET", "/oapi/v1/platform/user")
 
     def list_organizations(self) -> dict:
         """List organizations the user belongs to"""
-        return self._make_request("GET", "/users/joinedOrgs")
+        return self._make_request("GET", "/oapi/v1/platform/organizations")
 
     def list_departments(self, org_id: str) -> dict:
         """List departments in organization"""

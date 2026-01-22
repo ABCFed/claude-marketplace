@@ -57,7 +57,7 @@ from codeup_client import CodeupClient, get_env_check_message
 def cmd_get_current_user(args):
     """Get current user information"""
     client = CodeupClient()
-    result = client.get_current_user(organization_id=args.org_id)
+    result = client.get_current_user()
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
