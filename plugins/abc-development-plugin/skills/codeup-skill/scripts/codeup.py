@@ -87,11 +87,8 @@ def cmd_list_members(args):
     client = CodeupClient()
     result = client.list_members(
         args.org_id,
-        organization_member_name=args.name,
-        provider=args.provider,
-        extern_uid=args.extern_uid,
-        state=args.state,
-        max_results=args.max_results,
+        page=args.page,
+        per_page=args.per_page,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -327,11 +324,8 @@ def build_parser():
 
     p = subparsers.add_parser("list_members", help="List organization members")
     p.add_argument("--org_id", required=True, help="Organization ID")
-    p.add_argument("--name", help="Member name filter")
-    p.add_argument("--provider", help="Third-party system")
-    p.add_argument("--extern_uid", help="Third-party user ID")
-    p.add_argument("--state", choices=["normal", "blocked", "deleted"], help="User state")
-    p.add_argument("--max_results", type=int, default=20, help="Max results 0-50 (default: 20)")
+    p.add_argument("--page", type=int, default=1, help="Current page (default: 1)")
+    p.add_argument("--per_page", type=int, default=100, help="Items per page 1-100 (default: 100)")
 
     p = subparsers.add_parser("get_organization_member", help="Get organization member details")
     p.add_argument("--org_id", required=True, help="Organization ID")

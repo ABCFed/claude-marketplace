@@ -77,52 +77,20 @@ class CodeupClient:
     def list_members(
         self,
         org_id: str,
-        organization_member_name: str = None,
-        provider: str = None,
-        extern_uid: str = None,
-        state: str = None,
-        next_token: str = None,
-        max_results: int = 20,
-        join_time_from: int = None,
-        join_time_to: int = None,
-        contains_extern_info: bool = None,
+        page: int = 1,
+        per_page: int = 100,
     ) -> dict:
         """List organization members
 
         Args:
             org_id: Organization ID
-            organization_member_name: Member name filter
-            provider: Third-party system (used with externUid)
-            extern_uid: Third-party user ID
-            state: User state (normal/blocked/deleted), default normal
-            next_token: Pagination token
-            max_results: Max results (0-50, default 20)
-            join_time_from: Join time from (milliseconds timestamp)
-            join_time_to: Join time to (milliseconds timestamp)
-            contains_extern_info: Include third-party info, default false
+            page: Current page (default: 1)
+            per_page: Items per page, 1-100 (default: 100)
         """
-        params = {"maxResults": max_results}
-        if organization_member_name:
-            params["organizationMemberName"] = organization_member_name
-        if provider:
-            params["provider"] = provider
-        if extern_uid:
-            params["externUid"] = extern_uid
-        if state:
-            params["state"] = state
-        if next_token:
-            params["nextToken"] = next_token
-        if join_time_from:
-            params["joinTimeFrom"] = join_time_from
-        if join_time_to:
-            params["joinTimeTo"] = join_time_to
-        if contains_extern_info is not None:
-            params["containsExternInfo"] = contains_extern_info
-
         return self._make_request(
             "GET",
-            f"/organization/{org_id}/members",
-            params=params
+            f"/oapi/v1/platform/organizations/{org_id}/members",
+            params={"page": page, "perPage": per_page}
         )
 
     def get_organization_member(self, org_id: str, account_id: str) -> dict:
