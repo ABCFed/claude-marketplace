@@ -58,17 +58,21 @@ class CodeupClient:
 
     # ==================== User & Organization ====================
 
-    def get_current_user(self) -> dict:
-        """Get current user information"""
-        return self._make_request("GET", "/oapi/v1/user")
+    def get_current_user(self, organization_id: str = None) -> dict:
+        """Get current user information
 
-    def get_current_organization(self) -> dict:
-        """Get current organization information"""
-        return self._make_request("GET", "/oapi/v1/platform/organizations")
+        Args:
+            organization_id: Optional organization ID. Returns personal name if not provided,
+                           returns organization name if provided.
+        """
+        params = {}
+        if organization_id:
+            params["organizationId"] = organization_id
+        return self._make_request("GET", "/users/current", params=params if params else None)
 
     def list_organizations(self) -> dict:
         """List organizations the user belongs to"""
-        return self._make_request("GET", "/oapi/v1/platform/organizations")
+        return self._make_request("GET", "/users/joinedOrgs")
 
     def list_departments(self, org_id: str) -> dict:
         """List departments in organization"""
@@ -78,12 +82,67 @@ class CodeupClient:
         """Get department details"""
         return self._make_request("GET", f"/oapi/v1/organization/{org_id}/departments/{dept_id}")
 
-    def list_members(self, org_id: str, page: int = 1, limit: int = 20) -> dict:
-        """List organization members"""
+    def list_members(
+        self,
+        org_id: str,
+        organization_member_name: str = None,
+        provider: str = None,
+        extern_uid: str = None,
+        state: str = None,
+        next_token: str = None,
+        max_results: int = 20,
+        join_time_from: int = None,
+        join_time_to: int = None,
+        contains_extern_info: bool = None,
+    ) -> dict:
+        """List organization members
+
+        Args:
+            org_id: Organization ID
+            organization_member_name: Member name filter
+            provider: Third-party system (used with externUid)
+            extern_uid: Third-party user ID
+            state: User state (normal/blocked/deleted), default normal
+            next_token: Pagination token
+            max_results: Max results (0-50, default 20)
+            join_time_from: Join time from (milliseconds timestamp)
+            join_time_to: Join time to (milliseconds timestamp)
+            contains_extern_info: Include third-party info, default false
+        """
+        params = {"maxResults": max_results}
+        if organization_member_name:
+            params["organizationMemberName"] = organization_member_name
+        if provider:
+            params["provider"] = provider
+        if extern_uid:
+            params["externUid"] = extern_uid
+        if state:
+            params["state"] = state
+        if next_token:
+            params["nextToken"] = next_token
+        if join_time_from:
+            params["joinTimeFrom"] = join_time_from
+        if join_time_to:
+            params["joinTimeTo"] = join_time_to
+        if contains_extern_info is not None:
+            params["containsExternInfo"] = contains_extern_info
+
         return self._make_request(
             "GET",
-            f"/oapi/v1/organization/{org_id}/members",
-            params={"page": page, "limit": limit}
+            f"/organization/{org_id}/members",
+            params=params
+        )
+
+    def get_organization_member(self, org_id: str, account_id: str) -> dict:
+        """Get organization member details
+
+        Args:
+            org_id: Organization ID
+            account_id: Alibaba Cloud user UID
+        """
+        return self._make_request(
+            "GET",
+            f"/organization/{org_id}/members/{account_id}"
         )
 
     def search_members(self, org_id: str, query: str) -> dict:

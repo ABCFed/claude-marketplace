@@ -8,11 +8,11 @@ Usage:
 Commands:
     # User & Organization
     get_current_user           Get current user information
-    get_current_organization   Get current organization information
     list_organizations         List organizations user belongs to
     list_departments           List departments in organization
     get_department             Get department details
     list_members               List organization members
+    get_organization_member    Get organization member details
     search_members             Search organization members
     list_roles                 List organization roles
 
@@ -57,14 +57,7 @@ from codeup_client import CodeupClient, get_env_check_message
 def cmd_get_current_user(args):
     """Get current user information"""
     client = CodeupClient()
-    result = client.get_current_user()
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-
-
-def cmd_get_current_organization(args):
-    """Get current organization information"""
-    client = CodeupClient()
-    result = client.get_current_organization()
+    result = client.get_current_user(organization_id=args.org_id)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
@@ -92,7 +85,21 @@ def cmd_get_department(args):
 def cmd_list_members(args):
     """List organization members"""
     client = CodeupClient()
-    result = client.list_members(args.org_id, page=args.page, limit=args.limit)
+    result = client.list_members(
+        args.org_id,
+        organization_member_name=args.name,
+        provider=args.provider,
+        extern_uid=args.extern_uid,
+        state=args.state,
+        max_results=args.max_results,
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def cmd_get_organization_member(args):
+    """Get organization member details"""
+    client = CodeupClient()
+    result = client.get_organization_member(args.org_id, args.account_id)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
@@ -307,7 +314,8 @@ def build_parser():
     # ==================== User & Organization Commands ====================
 
     p = subparsers.add_parser("get_current_user", help="Get current user information")
-    p = subparsers.add_parser("get_current_organization", help="Get current organization information")
+    p.add_argument("--org_id", help="Organization ID (optional)")
+
     p = subparsers.add_parser("list_organizations", help="List organizations user belongs to")
 
     p = subparsers.add_parser("list_departments", help="List departments in organization")
@@ -319,8 +327,15 @@ def build_parser():
 
     p = subparsers.add_parser("list_members", help="List organization members")
     p.add_argument("--org_id", required=True, help="Organization ID")
-    p.add_argument("--page", type=int, default=1, help="Page number (default: 1)")
-    p.add_argument("--limit", type=int, default=20, help="Items per page (default: 20)")
+    p.add_argument("--name", help="Member name filter")
+    p.add_argument("--provider", help="Third-party system")
+    p.add_argument("--extern_uid", help="Third-party user ID")
+    p.add_argument("--state", choices=["normal", "blocked", "deleted"], help="User state")
+    p.add_argument("--max_results", type=int, default=20, help="Max results 0-50 (default: 20)")
+
+    p = subparsers.add_parser("get_organization_member", help="Get organization member details")
+    p.add_argument("--org_id", required=True, help="Organization ID")
+    p.add_argument("--account_id", required=True, help="Alibaba Cloud user UID")
 
     p = subparsers.add_parser("search_members", help="Search organization members")
     p.add_argument("--org_id", required=True, help="Organization ID")
@@ -473,11 +488,11 @@ def main():
     # Command dispatch
     cmd_map = {
         "get_current_user": cmd_get_current_user,
-        "get_current_organization": cmd_get_current_organization,
         "list_organizations": cmd_list_organizations,
         "list_departments": cmd_list_departments,
         "get_department": cmd_get_department,
         "list_members": cmd_list_members,
+        "get_organization_member": cmd_get_organization_member,
         "search_members": cmd_search_members,
         "list_roles": cmd_list_roles,
         "get_repository": cmd_get_repository,
