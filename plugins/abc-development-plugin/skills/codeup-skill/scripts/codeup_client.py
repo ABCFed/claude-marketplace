@@ -66,13 +66,25 @@ class CodeupClient:
         """List organizations the user belongs to"""
         return self._make_request("GET", "/oapi/v1/platform/organizations")
 
-    def list_departments(self, org_id: str) -> dict:
-        """List departments in organization"""
-        return self._make_request("GET", f"/oapi/v1/organization/{org_id}/departments")
+    def list_departments(self, org_id: str, parent_id: str = None) -> dict:
+        """List departments in organization
+
+        Args:
+            org_id: Organization ID
+            parent_id: Parent department ID (optional)
+        """
+        params = {}
+        if parent_id:
+            params["parentId"] = parent_id
+        return self._make_request(
+            "GET",
+            f"/oapi/v1/platform/organizations/{org_id}/departments",
+            params=params if params else None
+        )
 
     def get_department(self, org_id: str, dept_id: str) -> dict:
         """Get department details"""
-        return self._make_request("GET", f"/oapi/v1/organization/{org_id}/departments/{dept_id}")
+        return self._make_request("GET", f"/oapi/v1/platform/organizations/{org_id}/departments/{dept_id}")
 
     def list_members(
         self,
