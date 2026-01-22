@@ -8,33 +8,13 @@
 
 ### 通过 add-skill 安装（适用于所有 AI 代理）
 
-支持以下 AI Coding Agent：
-
-| Agent | 参数 | 项目目录 | 全局目录 |
-|-------|------|----------|----------|
-| Claude Code | `claude-code` | `.claude/skills/` | `~/.claude/skills/` |
-| Codex | `codex` | `.codex/skills/` | `~/.codex/skills/` |
-| Cursor | `cursor` | `.cursor/skills/` | `~/.cursor/skills/` |
-| GitHub Copilot | `github-copilot` | `.github/skills/` | `~/.copilot/skills/` |
-| Roo Code | `roo` | `.roo/skills/` | `~/.roo/skills/` |
-| Windsurf | `windsurf` | `.windsurf/skills/` | `~/.codeium/windsurf/skills/` |
-| Gemini CLI | `gemini-cli` | `.gemini/skills/` | `~/.gemini/skills/` |
-| Goose | `goose` | `.goose/skills/` | `~/.config/goose/skills/` |
-| Trae | `trae` | `.trae/skills/` | `~/.trae/skills/` |
-| Amp | `amp` | `.agents/skills/` | `~/.config/agents/skills/` |
-| Antigravity | `antigravity` | `.agent/skills/` | `~/.gemini/antigravity/skills/` |
-| Clawdbot | `clawdbot` | `skills/` | `~/.clawdbot/skills/` |
-| Droid | `droid` | `.factory/skills/` | `~/.factory/skills/` |
-| Kilo Code | `kilo` | `.kilocode/skills/` | `~/.kilocode/skills/` |
-| Kiro CLI | `kiro-cli` | `.kiro/skills/` | `~/.kiro/skills/` |
-| Neovate | `neovate` | `.neovate/skills/` | `~/.neovate/skills/` |
-| OpenCode | `opencode` | `.opencode/skills/` | `~/.config/opencode/skills/` |
+![add-skill 安装示例](docs/install_screenshot.png)
 
 ```bash
 # 安装单个 skill
-npx add-skill ABCFed/claude-marketplace/tree/main/skills/tapd-skill
-npx add-skill ABCFed/claude-marketplace/tree/main/skills/apifox-skill
-npx add-skill ABCFed/claude-marketplace/tree/main/skills/codeup-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup-skill
 ```
 
 **常用选项**：
@@ -51,13 +31,13 @@ npx add-skill ABCFed/claude-marketplace/tree/main/skills/codeup-skill
 
 ```bash
 # 安装到用户目录
-npx add-skill ABCFed/claude-marketplace/tree/main/skills/tapd-skill --global
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill --global
 
 # 指定 agent 安装
-npx add-skill ABCFed/claude-marketplace/tree/main/skills/tapd-skill --agent codex
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill --agent codex
 
 # 跳过确认提示
-npx add-skill ABCFed/claude-marketplace/tree/main/skills/tapd-skill --yes
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill --yes
 ```
 
 ### 通过插件市场安装（仅 Claude Code）
@@ -81,7 +61,7 @@ TAPD 敏捷研发管理平台集成，通过 TAPD API 实现研发全流程管�
 
 **安装**：
 ```bash
-npx add-skill ABCFed/claude-marketplace/tree/main/skills/tapd-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill
 ```
 
 **准备**：
@@ -111,7 +91,7 @@ ABC 医疗云 API 文档查询工具，读取和查询 ABC API 的 OpenAPI 规�
 
 **安装**：
 ```bash
-npx add-skill ABCFed/claude-marketplace/tree/main/skills/apifox-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox-skill
 ```
 
 **准备**：
@@ -138,7 +118,7 @@ source ~/.zshrc
 
 **安装**：
 ```bash
-npx add-skill ABCFed/claude-marketplace/tree/main/skills/codeup-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup-skill
 ```
 
 **准备**：
