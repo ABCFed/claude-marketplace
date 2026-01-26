@@ -91,7 +91,7 @@ class CodeupClient:
         org_id: str,
         page: int = 1,
         per_page: int = 100,
-    ) -> dict:
+    ) -> list:
         """List organization members
 
         Args:
@@ -105,29 +105,36 @@ class CodeupClient:
             params={"page": page, "perPage": per_page}
         )
 
-    def get_organization_member(self, org_id: str, account_id: str) -> dict:
+    def get_organization_member(self, org_id: str, member_id: str) -> dict:
         """Get organization member details
 
         Args:
             org_id: Organization ID
-            account_id: Alibaba Cloud user UID
+            member_id: Member ID
         """
         return self._make_request(
             "GET",
-            f"/organization/{org_id}/members/{account_id}"
+            f"/oapi/v1/platform/organizations/{org_id}/members/{member_id}"
         )
 
-    def search_members(self, org_id: str, query: str) -> dict:
-        """Search organization members"""
+    def search_members(self, org_id: str, query: str, page: int = 1, per_page: int = 100) -> dict:
+        """Search organization members
+
+        Args:
+            org_id: Organization ID
+            query: Search query
+            page: Page number (default: 1)
+            per_page: Items per page (default: 100)
+        """
         return self._make_request(
-            "GET",
-            f"/oapi/v1/organization/{org_id}/members",
-            params={"query": query}
+            "POST",
+            f"/oapi/v1/platform/organizations/{org_id}/members:search",
+            data={"query": query, "page": page, "perPage": per_page}
         )
 
     def list_roles(self, org_id: str) -> dict:
         """List organization roles"""
-        return self._make_request("GET", f"/oapi/v1/organization/{org_id}/roles")
+        return self._make_request("GET", f"/oapi/v1/platform/organizations/{org_id}/roles")
 
     # ==================== Repository ====================
 
@@ -138,12 +145,33 @@ class CodeupClient:
             f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}"
         )
 
-    def list_repositories(self, org_id: str, page: int = 1, limit: int = 20) -> dict:
-        """List repositories in organization"""
+    def list_repositories(self, org_id: str, page: int = 1, per_page: int = 20,
+                          order_by: str = None, sort: str = None,
+                          search: str = None, archived: bool = None) -> dict:
+        """List repositories in organization
+
+        Args:
+            org_id: Organization ID
+            page: Page number (default: 1)
+            per_page: Items per page, 1-100 (default: 20)
+            order_by: Sort field - created_at, name, path, last_activity_at
+            sort: Sort order - asc, desc (default: desc)
+            search: Search keyword for repository path
+            archived: Filter by archived status
+        """
+        params = {"page": page, "perPage": per_page}
+        if order_by:
+            params["orderBy"] = order_by
+        if sort:
+            params["sort"] = sort
+        if search:
+            params["search"] = search
+        if archived is not None:
+            params["archived"] = archived
         return self._make_request(
             "GET",
             f"/oapi/v1/codeup/organizations/{org_id}/repositories",
-            params={"page": page, "limit": limit}
+            params=params
         )
 
     # ==================== Branch ====================
@@ -156,11 +184,18 @@ class CodeupClient:
         )
 
     def create_branch(self, org_id: str, repo_id: str, branch_name: str, source_branch: str) -> dict:
-        """Create a new branch"""
+        """Create a new branch
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            branch_name: New branch name
+            source_branch: Source branch/tag/commit (e.g., 'master' or 'refs/tags/v1.0')
+        """
         return self._make_request(
             "POST",
             f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/branches",
-            data={"branchName": branch_name, "sourceBranch": source_branch}
+            params={"branch": branch_name, "ref": source_branch}
         )
 
     def delete_branch(self, org_id: str, repo_id: str, branch_name: str) -> dict:
@@ -170,31 +205,53 @@ class CodeupClient:
             f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/branches/{branch_name}"
         )
 
-    def list_branches(self, org_id: str, repo_id: str, page: int = 1, limit: int = 20) -> dict:
+    def list_branches(self, org_id: str, repo_id: str, page: int = 1, per_page: int = 20) -> dict:
         """List branches in repository"""
         return self._make_request(
             "GET",
             f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/branches",
-            params={"page": page, "limit": limit}
+            params={"page": page, "perPage": per_page}
         )
 
     # ==================== File ====================
 
     def get_file(self, org_id: str, repo_id: str, file_path: str, branch: str = "master") -> dict:
-        """Get file content"""
+        """Get file content
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            file_path: File path in repository
+            branch: Branch name (default: master)
+        """
+        # URL encode the file path
+        encoded_path = requests.utils.quote(file_path, safe="")
         return self._make_request(
             "GET",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/files",
-            params={"filePath": file_path, "ref": branch}
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/files/{encoded_path}",
+            params={"ref": branch}
         )
 
     def create_file(self, org_id: str, repo_id: str, file_path: str, content: str,
-                    branch: str = "master", message: str = None) -> dict:
-        """Create a new file"""
+                    branch: str = "master", message: str = None, encoding: str = "text") -> dict:
+        """Create a new file
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            file_path: File path in repository
+            content: File content
+            branch: Branch name (default: master)
+            message: Commit message
+            encoding: Content encoding (default: text, can be base64)
+        """
+        # URL encode the file path
+        encoded_path = requests.utils.quote(file_path, safe="")
         data = {
-            "filePath": file_path,
-            "branchName": branch,
-            "content": content
+            "filePath": encoded_path,
+            "branch": branch,
+            "content": content,
+            "encoding": encoding
         }
         if message:
             data["commitMessage"] = message
@@ -205,43 +262,71 @@ class CodeupClient:
         )
 
     def update_file(self, org_id: str, repo_id: str, file_path: str, content: str,
-                    branch: str = "master", message: str = None) -> dict:
-        """Update an existing file"""
+                    branch: str = "master", message: str = None, encoding: str = "text") -> dict:
+        """Update an existing file
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            file_path: File path in repository
+            content: File content
+            branch: Branch name (default: master)
+            message: Commit message
+            encoding: Content encoding (default: text, can be base64)
+        """
+        # URL encode the file path
+        encoded_path = requests.utils.quote(file_path, safe="")
         data = {
-            "filePath": file_path,
-            "branchName": branch,
-            "content": content
+            "branch": branch,
+            "content": content,
+            "encoding": encoding
         }
         if message:
             data["commitMessage"] = message
         return self._make_request(
             "PUT",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/files",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/files/{encoded_path}",
             data=data
         )
 
     def delete_file(self, org_id: str, repo_id: str, file_path: str,
                     branch: str = "master", message: str = None) -> dict:
-        """Delete a file"""
-        params = {
-            "filePath": file_path,
-            "branchName": branch
-        }
-        if message:
-            params["commitMessage"] = message
+        """Delete a file
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            file_path: File path in repository
+            branch: Branch name (default: master)
+            message: Commit message (required)
+        """
+        if not message:
+            raise ValueError("commitMessage is required for deleting a file")
+        # URL encode the file path
+        encoded_path = requests.utils.quote(file_path, safe="")
+        params = {"branch": branch, "commitMessage": message}
         return self._make_request(
             "DELETE",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/files",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/files/{encoded_path}",
             params=params
         )
 
     def list_files(self, org_id: str, repo_id: str, path: str = "",
-                   branch: str = "master", page: int = 1, limit: int = 100) -> dict:
-        """List files in repository"""
+                   branch: str = "master",
+                   type: str = "RECURSIVE") -> dict:
+        """List files in repository
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            path: Directory path (default: "")
+            branch: Branch name (default: master)
+            type: Tree type - DIRECT, RECURSIVE, or FLATTEN (default: RECURSIVE)
+        """
         return self._make_request(
             "GET",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/repositoryTree",
-            params={"path": path, "ref": branch, "page": page, "limit": limit}
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/files/tree",
+            params={"path": path, "ref": branch, "type": type}
         )
 
     def compare(self, org_id: str, repo_id: str, from_ref: str, to_ref: str,
@@ -273,22 +358,59 @@ class CodeupClient:
 
     # ==================== Merge Request ====================
 
-    def get_merge_request(self, org_id: str, repo_id: str, mr_id: str) -> dict:
-        """Get merge request details"""
+    def get_merge_request(self, org_id: str, repo_id: str, local_id: int) -> dict:
+        """Get merge request details
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID (the sequence number in the repository)
+        """
         return self._make_request(
             "GET",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{mr_id}",
-            params={"projectIds": repo_id}
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}"
         )
 
     def list_merge_requests(self, org_id: str, repo_id: str = None, state: str = None,
-                            page: int = 1, limit: int = 20) -> dict:
-        """List merge requests in repository"""
-        params = {"page": page, "limit": limit}
+                            page: int = 1, per_page: int = 20,
+                            author_ids: str = None, reviewer_ids: str = None,
+                            search: str = None, order_by: str = None, sort: str = None,
+                            created_before: str = None, created_after: str = None) -> dict:
+        """List merge requests in organization
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID (optional)
+            state: MR state - opened, merged, closed
+            page: Page number (default: 1)
+            per_page: Items per page (default: 20)
+            author_ids: Author user IDs (comma-separated)
+            reviewer_ids: Reviewer user IDs (comma-separated)
+            search: Title keyword search
+            order_by: Sort field - created_at, updated_at
+            sort: Sort order - asc, desc
+            created_before: Start creation time (ISO 8601)
+            created_after: End creation time (ISO 8601)
+        """
+        params = {"page": page, "perPage": per_page}
         if state:
             params["state"] = state
         if repo_id:
             params["projectIds"] = repo_id
+        if author_ids:
+            params["authorIds"] = author_ids
+        if reviewer_ids:
+            params["reviewerIds"] = reviewer_ids
+        if search:
+            params["search"] = search
+        if order_by:
+            params["orderBy"] = order_by
+        if sort:
+            params["sort"] = sort
+        if created_before:
+            params["createdBefore"] = created_before
+        if created_after:
+            params["createdAfter"] = created_after
         return self._make_request(
             "GET",
             f"/oapi/v1/codeup/organizations/{org_id}/changeRequests",
@@ -297,44 +419,111 @@ class CodeupClient:
 
     def create_merge_request(self, org_id: str, repo_id: str, title: str,
                              source_branch: str, target_branch: str,
-                             description: str = None) -> dict:
-        """Create a merge request"""
+                             description: str = None,
+                             reviewer_user_ids: list = None) -> dict:
+        """Create a merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            title: MR title
+            source_branch: Source branch
+            target_branch: Target branch
+            description: MR description
+            reviewer_user_ids: List of reviewer user IDs
+        """
         data = {
             "title": title,
             "sourceBranch": source_branch,
             "targetBranch": target_branch,
-            "sourceProjectId": str(repo_id),
-            "targetProjectId": str(repo_id)
+            "sourceProjectId": int(repo_id),
+            "targetProjectId": int(repo_id)
         }
         if description:
             data["description"] = description
+        if reviewer_user_ids:
+            data["reviewerUserIds"] = reviewer_user_ids
         return self._make_request(
             "POST",
             f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests",
             data=data
         )
 
-    def create_merge_request_comment(self, org_id: str, repo_id: str, mr_id: str,
-                                     content: str) -> dict:
-        """Add a comment to merge request"""
+    def create_merge_request_comment(self, org_id: str, repo_id: str, local_id: int,
+                                     content: str, comment_type: str = "GLOBAL_COMMENT",
+                                     draft: bool = False, patchset_biz_id: str = None,
+                                     file_path: str = None, line_number: int = None,
+                                     parent_comment_biz_id: str = None,
+                                     from_patchset_biz_id: str = None,
+                                     to_patchset_biz_id: str = None,
+                                     resolved: bool = False) -> dict:
+        """Add a comment to merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID
+            content: Comment content
+            comment_type: Comment type - GLOBAL_COMMENT or INLINE_COMMENT
+            draft: Is draft comment (default: False)
+            patchset_biz_id: Patch set biz ID (required for INLINE_COMMENT)
+            file_path: File path for inline comment
+            line_number: Line number for inline comment
+            parent_comment_biz_id: Parent comment biz ID
+            from_patchset_biz_id: From patch set biz ID
+            to_patchset_biz_id: To patch set biz ID (required for INLINE_COMMENT)
+            resolved: Is resolved (default: False)
+        """
+        data = {
+            "content": content,
+            "comment_type": comment_type,
+            "draft": draft,
+            "resolved": resolved
+        }
+        if patchset_biz_id:
+            data["patchset_biz_id"] = patchset_biz_id
+        if file_path:
+            data["file_path"] = file_path
+        if line_number:
+            data["line_number"] = line_number
+        if parent_comment_biz_id:
+            data["parent_comment_biz_id"] = parent_comment_biz_id
+        if from_patchset_biz_id:
+            data["from_patchset_biz_id"] = from_patchset_biz_id
+        if to_patchset_biz_id:
+            data["to_patchset_biz_id"] = to_patchset_biz_id
         return self._make_request(
             "POST",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{mr_id}/comments",
-            data={"content": content}
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/comments",
+            data=data
         )
 
-    def list_merge_request_comments(self, org_id: str, repo_id: str, mr_id: str,
-                                    page: int = 1, limit: int = 20) -> dict:
-        """List comments on merge request"""
+    def list_merge_request_comments(self, org_id: str, repo_id: str, local_id: int,
+                                    page: int = 1, per_page: int = 20) -> list:
+        """List comments on merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID
+            page: Page number (default: 1)
+            per_page: Items per page (default: 20)
+        """
         return self._make_request(
-            "GET",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{mr_id}/comments",
-            params={"page": page, "limit": limit}
+            "POST",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/comments/list",
+            data={"page": page, "perPage": per_page}
         )
 
-    def list_merge_request_patch_sets(self, org_id: str, repo_id: str, mr_id: str) -> dict:
-        """List patch sets (commits) of merge request"""
+    def list_merge_request_patch_sets(self, org_id: str, repo_id: str, local_id: int) -> dict:
+        """List patch sets (commits) of merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID
+        """
         return self._make_request(
             "GET",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{mr_id}/patchsets"
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/diffs/patches"
         )

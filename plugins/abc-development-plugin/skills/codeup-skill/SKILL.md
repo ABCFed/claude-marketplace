@@ -42,6 +42,7 @@ python codeup.py <command> [参数]
 | `list_departments` | 列出部门 |
 | `get_department` | 获取部门详情 |
 | `list_members` | 列出组织成员 |
+| `get_organization_member` | 获取成员详情 |
 | `search_members` | 搜索成员 |
 | `list_roles` | 列出角色 |
 
@@ -95,44 +96,47 @@ python codeup.py list_organizations
 
 ```bash
 # 列出部门
-python codeup.py list_departments --org_id 5f9a8b7c6d8e1a2c3d4e5f6g
+python codeup.py list_departments --org_id 62d62893487c500c27f72e36
 
 # 获取部门详情
-python codeup.py get_department --org_id 5f9a8b7c6d8e1a2c3d4e5f6g --dept_id 123456
+python codeup.py get_department --org_id 62d62893487c500c27f72e36 --dept_id 68d910db15dfc6c8604fccb4
 
 # 列出所有成员
-python codeup.py list_members --org_id 5f9a8b7c6d8e1a2c3d4e5f6g
+python codeup.py list_members --org_id 62d62893487c500c27f72e36
+
+# 获取成员详情
+python codeup.py get_organization_member --org_id 62d62893487c500c27f72e36 --member_id 639fe0e38d9a873a30aad3df
 
 # 搜索成员
-python codeup.py search_members --org_id 5f9a8b7c6d8e1a2c3d4e5f6g --query "张三"
+python codeup.py search_members --org_id 62d62893487c500c27f72e36 --query "姓名"
 
 # 列出角色
-python codeup.py list_roles --org_id 5f9a8b7c6d8e1a2c3d4e5f6g
+python codeup.py list_roles --org_id 62d62893487c500c27f72e36
 ```
 
 ### 仓库与分支管理
 
 ```bash
 # 列出仓库
-python codeup.py list_repositories --org_id 5f9a8b7c6d8e1a2c3d4e5f6g
+python codeup.py list_repositories --org_id 62d62893487c500c27f72e36
 
 # 获取仓库详情
-python codeup.py get_repository --org_id 5f9a8b7c6d8e1a2c3d4e5f6g --repo_id 789012
+python codeup.py get_repository --org_id 62d62893487c500c27f72e36 --repo_id 5822285
 
 # 列出分支
-python codeup.py list_branches --org_id 5f9a8b7c6d8e1a2c3d4e5f6g --repo_id 789012
+python codeup.py list_branches --org_id 62d62893487c500c27f72e36 --repo_id 5822285
 
 # 创建分支
 python codeup.py create_branch \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
     --branch_name feature/new-feature \
     --source_branch master
 
 # 删除分支
 python codeup.py delete_branch \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
     --branch_name feature/old-feature
 ```
 
@@ -141,15 +145,15 @@ python codeup.py delete_branch \
 ```bash
 # 获取文件内容
 python codeup.py get_file \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
     --file_path README.md \
     --branch master
 
 # 创建文件
 python codeup.py create_file \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
     --file_path docs/new-doc.md \
     --content "# 新文档\n\n这是内容" \
     --branch feature/new-feature \
@@ -157,23 +161,23 @@ python codeup.py create_file \
 
 # 更新文件
 python codeup.py update_file \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
     --file_path README.md \
     --content "# 更新后的内容" \
     --message "Update README"
 
 # 列出文件
 python codeup.py list_files \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
     --path src \
     --branch master
 
 # 对比代码
 python codeup.py compare \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
     --from feature/new-feature \
     --to master
 ```
@@ -183,25 +187,25 @@ python codeup.py compare \
 ```bash
 # 列出 MR
 python codeup.py list_merge_requests \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285
 
 # 列出打开的 MR
 python codeup.py list_merge_requests \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
-    --state open
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --state opened
 
 # 获取 MR 详情
 python codeup.py get_merge_request \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
-    --mr_id 12345
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584
 
 # 创建 MR
 python codeup.py create_merge_request \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
     --title "Feature: 新功能" \
     --source_branch feature/new-feature \
     --target_branch master \
@@ -209,41 +213,41 @@ python codeup.py create_merge_request \
 
 # 添加 MR 评论
 python codeup.py create_merge_request_comment \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
-    --mr_id 12345 \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584 \
     --content "代码审查通过"
 
 # 列出 MR 评论
 python codeup.py list_merge_request_comments \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
-    --mr_id 12345
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584
 
 # 列出 MR 补丁集（提交）
 python codeup.py list_merge_request_patch_sets \
-    --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
-    --repo_id 789012 \
-    --mr_id 12345
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584
 ```
 
 ## 常用命令速查
 
 ```bash
 # 组织成员
-python codeup.py list_members --org_id $ORG_ID
-python codeup.py search_members --org_id $ORG_ID --query "姓名"
+python codeup.py list_members --org_id 62d62893487c500c27f72e36
+python codeup.py search_members --org_id 62d62893487c500c27f72e36 --query "姓名"
 
 # 仓库操作
-python codeup.py list_repositories --org_id $ORG_ID
-python codeup.py list_branches --org_id $ORG_ID --repo_id $REPO_ID
+python codeup.py list_repositories --org_id 62d62893487c500c27f72e36
+python codeup.py list_branches --org_id 62d62893487c500c27f72e36 --repo_id 5822285
 
 # 文件操作
-python codeup.py get_file --org_id $ORG_ID --repo_id $REPO_ID --file_path README.md
+python codeup.py get_file --org_id 62d62893487c500c27f72e36 --repo_id 5822285 --file_path README.md
 
 # MR 操作
-python codeup.py list_merge_requests --org_id $ORG_ID --repo_id $REPO_ID --state open
-python codeup.py get_merge_request --org_id $ORG_ID --repo_id $REPO_ID --mr_id $MR_ID
+python codeup.py list_merge_requests --org_id 62d62893487c500c27f72e36 --repo_id 5822285 --state opened
+python codeup.py get_merge_request --org_id 62d62893487c500c27f72e36 --repo_id 5822285 --local_id 584
 ```
 
 ## Claude 使用方式
@@ -276,7 +280,7 @@ Claude:
 python codeup.py list_organizations
 
 # 列出仓库（包含 repo_id）
-python codeup.py list_repositories --org_id <org_id>
+python codeup.py list_repositories --org_id 62d62893487c500c27f72e36
 ```
 
 ### 2. 权限不足怎么办？
@@ -290,7 +294,7 @@ python codeup.py list_repositories --org_id <org_id>
 
 | 状态 | 说明 |
 |------|------|
-| `open` | 打开中 |
+| `opened` | 打开中 |
 | `closed` | 已关闭 |
 | `merged` | 已合并 |
 
@@ -300,7 +304,7 @@ python codeup.py list_repositories --org_id <org_id>
 codeup-skill/
 ├── SKILL.md
 ├── references/
-│   ├── code-management.md       # 代码管理 API 参考
+│   ├── code-management.md          # 代码管理 API 参考
 │   └── organization-management.md  # 组织管理 API 参考
 └── scripts/
     ├── codeup.py              # 统一入口脚本（27个子命令）
