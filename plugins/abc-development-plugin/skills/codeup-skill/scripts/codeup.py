@@ -35,13 +35,20 @@ Commands:
     compare                    Compare code between branches
 
     # Merge Request
-    get_merge_request          Get merge request details
+    get_change_request         Get merge request details
     list_merge_requests        List merge requests
     create_merge_request       Create a merge request
     close_merge_request        Close a merge request
     create_merge_request_comment   Add comment to MR
     list_merge_request_comments    List MR comments
     list_merge_request_patch_sets  List MR patch sets (commits)
+    merge_change_request           Merge a MR
+    reopen_change_request          Reopen a closed MR
+    review_change_request          Review (approve/reject) a MR
+    update_change_request          Update a MR
+    get_change_request_tree        Get changed files tree of MR
+    delete_change_request_comment  Delete a MR comment
+    update_change_request_comment  Update a MR comment
 """
 
 import os
@@ -241,10 +248,10 @@ def cmd_compare(args):
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
-def cmd_get_merge_request(args):
+def cmd_get_change_request(args):
     """Get merge request details"""
     client = CodeupClient()
-    result = client.get_merge_request(args.org_id, args.repo_id, args.local_id)
+    result = client.get_change_request(args.org_id, args.repo_id, args.local_id)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
@@ -317,6 +324,77 @@ def cmd_list_merge_request_patch_sets(args):
     client = CodeupClient()
     result = client.list_merge_request_patch_sets(
         args.org_id, args.repo_id, args.local_id
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def cmd_merge_change_request(args):
+    """Merge a merge request"""
+    client = CodeupClient()
+    result = client.merge_change_request(args.org_id, args.repo_id, args.local_id)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def cmd_reopen_change_request(args):
+    """Reopen a closed merge request"""
+    client = CodeupClient()
+    result = client.reopen_change_request(args.org_id, args.repo_id, args.local_id)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def cmd_review_change_request(args):
+    """Review (approve/reject) a merge request"""
+    client = CodeupClient()
+    result = client.review_change_request(
+        args.org_id, args.repo_id, args.local_id,
+        args.decision, args.comment
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def cmd_update_change_request(args):
+    """Update a merge request"""
+    client = CodeupClient()
+    result = client.update_change_request(
+        args.org_id, args.repo_id, args.local_id,
+        title=args.title, description=args.description
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def cmd_get_change_request_tree(args):
+    """Get changed files tree of a merge request"""
+    client = CodeupClient()
+    result = client.get_change_request_tree(
+        args.org_id, args.repo_id, args.local_id,
+        page=args.page, per_page=args.per_page
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def cmd_delete_change_request_comment(args):
+    """Delete a comment on merge request"""
+    client = CodeupClient()
+    result = client.delete_change_request_comment(
+        args.org_id, args.repo_id, args.comment_biz_id
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def cmd_update_change_request_comment(args):
+    """Update a comment on merge request"""
+    client = CodeupClient()
+    # Read content from file if specified, otherwise use stdin
+    if args.content_file:
+        with open(args.content_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+    elif args.content:
+        content = args.content
+    else:
+        content = sys.stdin.read()
+
+    result = client.update_change_request_comment(
+        args.org_id, args.repo_id, args.comment_biz_id, content
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -456,7 +534,7 @@ def build_parser():
 
     # ==================== Merge Request Commands ====================
 
-    p = subparsers.add_parser("get_merge_request", help="Get merge request details")
+    p = subparsers.add_parser("get_change_request", help="Get merge request details")
     p.add_argument("--org_id", required=True, help="Organization ID")
     p.add_argument("--repo_id", required=True, help="Repository ID")
     p.add_argument("--local_id", type=int, required=True, help="Local MR ID (sequence number)")
@@ -517,6 +595,50 @@ def build_parser():
     p.add_argument("--repo_id", required=True, help="Repository ID")
     p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
 
+    p = subparsers.add_parser("merge_change_request", help="Merge a merge request")
+    p.add_argument("--org_id", required=True, help="Organization ID")
+    p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
+
+    p = subparsers.add_parser("reopen_change_request", help="Reopen a closed merge request")
+    p.add_argument("--org_id", required=True, help="Organization ID")
+    p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
+
+    p = subparsers.add_parser("review_change_request", help="Review (approve/reject) a merge request")
+    p.add_argument("--org_id", required=True, help="Organization ID")
+    p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
+    p.add_argument("--decision", required=True, choices=["APPROVE", "REJECT", "ABSTAIN"],
+                    help="Review decision")
+    p.add_argument("--comment", help="Review comment (optional)")
+
+    p = subparsers.add_parser("update_change_request", help="Update a merge request")
+    p.add_argument("--org_id", required=True, help="Organization ID")
+    p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
+    p.add_argument("--title", help="New title (optional)")
+    p.add_argument("--description", help="New description (optional)")
+
+    p = subparsers.add_parser("get_change_request_tree", help="Get changed files tree of merge request")
+    p.add_argument("--org_id", required=True, help="Organization ID")
+    p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
+    p.add_argument("--page", type=int, default=1, help="Page number (default: 1)")
+    p.add_argument("--per_page", type=int, default=50, help="Items per page (default: 50)")
+
+    p = subparsers.add_parser("delete_change_request_comment", help="Delete a comment on merge request")
+    p.add_argument("--org_id", required=True, help="Organization ID")
+    p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--comment_biz_id", required=True, help="Comment biz ID")
+
+    p = subparsers.add_parser("update_change_request_comment", help="Update a comment on merge request")
+    p.add_argument("--org_id", required=True, help="Organization ID")
+    p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--comment_biz_id", required=True, help="Comment biz ID")
+    p.add_argument("--content", help="Comment content (or use --content-file or stdin)")
+    p.add_argument("--content-file", help="File path to read content from")
+
     return parser
 
 
@@ -557,13 +679,20 @@ def main():
         "delete_file": cmd_delete_file,
         "list_files": cmd_list_files,
         "compare": cmd_compare,
-        "get_merge_request": cmd_get_merge_request,
+        "get_change_request": cmd_get_change_request,
         "list_merge_requests": cmd_list_merge_requests,
         "create_merge_request": cmd_create_merge_request,
         "close_merge_request": cmd_close_merge_request,
         "create_merge_request_comment": cmd_create_merge_request_comment,
         "list_merge_request_comments": cmd_list_merge_request_comments,
         "list_merge_request_patch_sets": cmd_list_merge_request_patch_sets,
+        "merge_change_request": cmd_merge_change_request,
+        "reopen_change_request": cmd_reopen_change_request,
+        "review_change_request": cmd_review_change_request,
+        "update_change_request": cmd_update_change_request,
+        "get_change_request_tree": cmd_get_change_request_tree,
+        "delete_change_request_comment": cmd_delete_change_request_comment,
+        "update_change_request_comment": cmd_update_change_request_comment,
     }
 
     cmd_func = cmd_map.get(args.command)

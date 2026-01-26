@@ -358,7 +358,7 @@ class CodeupClient:
 
     # ==================== Merge Request ====================
 
-    def get_merge_request(self, org_id: str, repo_id: str, local_id: int) -> dict:
+    def get_change_request(self, org_id: str, repo_id: str, local_id: int) -> dict:
         """Get merge request details
 
         Args:
@@ -539,4 +539,119 @@ class CodeupClient:
         return self._make_request(
             "GET",
             f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/diffs/patches"
+        )
+
+    def merge_change_request(self, org_id: str, repo_id: str, local_id: int) -> dict:
+        """Merge a merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID
+        """
+        return self._make_request(
+            "POST",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/merge"
+        )
+
+    def reopen_change_request(self, org_id: str, repo_id: str, local_id: int) -> dict:
+        """Reopen a closed merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID
+        """
+        return self._make_request(
+            "POST",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/reopen"
+        )
+
+    def review_change_request(self, org_id: str, repo_id: str, local_id: int,
+                              decision: str, comment: str = None) -> dict:
+        """Review (approve/reject) a merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID
+            decision: Review decision - APPROVE, REJECT, or ABSTAIN
+            comment: Review comment (optional)
+        """
+        data = {"decision": decision}
+        if comment:
+            data["comment"] = comment
+        return self._make_request(
+            "POST",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/review",
+            data=data
+        )
+
+    def update_change_request(self, org_id: str, repo_id: str, local_id: int,
+                              title: str = None, description: str = None) -> dict:
+        """Update a merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID
+            title: New title (optional)
+            description: New description (optional)
+        """
+        data = {}
+        if title:
+            data["title"] = title
+        if description:
+            data["description"] = description
+        return self._make_request(
+            "PUT",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}",
+            data=data
+        )
+
+    def get_change_request_tree(self, org_id: str, repo_id: str, local_id: int,
+                                 page: int = 1, per_page: int = 50) -> dict:
+        """Get changed files tree of a merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID
+            page: Page number (default: 1)
+            per_page: Items per page (default: 50)
+        """
+        return self._make_request(
+            "GET",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/tree",
+            params={"page": page, "perPage": per_page}
+        )
+
+    def delete_change_request_comment(self, org_id: str, repo_id: str,
+                                      comment_biz_id: str) -> dict:
+        """Delete a comment on merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            comment_biz_id: Comment biz ID
+        """
+        return self._make_request(
+            "DELETE",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/comments/{comment_biz_id}"
+        )
+
+    def update_change_request_comment(self, org_id: str, repo_id: str,
+                                      comment_biz_id: str, content: str) -> dict:
+        """Update a comment on merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            comment_biz_id: Comment biz ID
+            content: New comment content
+        """
+        return self._make_request(
+            "PUT",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/comments/{comment_biz_id}",
+            data={"content": content}
         )

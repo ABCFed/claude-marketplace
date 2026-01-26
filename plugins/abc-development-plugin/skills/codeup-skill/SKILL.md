@@ -73,12 +73,19 @@ python codeup.py <command> [参数]
 ### 合并请求
 | 命令 | 说明 |
 |------|------|
-| `get_merge_request` | 获取 MR 详情 |
+| `get_change_request` | 获取 MR 详情 |
 | `list_merge_requests` | 列出 MR |
 | `create_merge_request` | 创建 MR |
 | `close_merge_request` | 关闭 MR |
+| `merge_change_request` | 合并 MR |
+| `reopen_change_request` | 重新打开已关闭的 MR |
+| `review_change_request` | 审查 MR（批准/拒绝） |
+| `update_change_request` | 更新 MR 信息 |
+| `get_change_request_tree` | 获取 MR 变更文件列表 |
 | `create_merge_request_comment` | 添加 MR 评论 |
 | `list_merge_request_comments` | 列出 MR 评论 |
+| `delete_change_request_comment` | 删除 MR 评论 |
+| `update_change_request_comment` | 更新 MR 评论 |
 | `list_merge_request_patch_sets` | 列出 MR 补丁集 |
 
 ## 使用示例
@@ -198,7 +205,7 @@ python codeup.py list_merge_requests \
     --state opened
 
 # 获取 MR 详情
-python codeup.py get_merge_request \
+python codeup.py get_change_request \
     --org_id 62d62893487c500c27f72e36 \
     --repo_id 5822285 \
     --local_id 584
@@ -236,6 +243,60 @@ python codeup.py list_merge_request_patch_sets \
     --org_id 62d62893487c500c27f72e36 \
     --repo_id 5822285 \
     --local_id 584
+
+# 合并 MR
+python codeup.py merge_change_request \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584
+
+# 重新打开已关闭的 MR
+python codeup.py reopen_change_request \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584
+
+# 审查 MR（批准）
+python codeup.py review_change_request \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584 \
+    --decision APPROVE \
+    --comment "代码审查通过"
+
+# 审查 MR（拒绝）
+python codeup.py review_change_request \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584 \
+    --decision REJECT \
+    --comment "需要修复单元测试"
+
+# 更新 MR 标题
+python codeup.py update_change_request \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584 \
+    --title "新的 MR 标题"
+
+# 获取 MR 变更文件列表
+python codeup.py get_change_request_tree \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584
+
+# 删除 MR 评论
+python codeup.py delete_change_request_comment \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --comment_biz_id 682d5c6d8a3b400a8c4b1234
+
+# 更新 MR 评论
+python codeup.py update_change_request_comment \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --comment_biz_id 682d5c6d8a3b400a8c4b1234 \
+    --content "更新后的评论内容"
 ```
 
 ## 常用命令速查
@@ -254,7 +315,7 @@ python codeup.py get_file --org_id 62d62893487c500c27f72e36 --repo_id 5822285 --
 
 # MR 操作
 python codeup.py list_merge_requests --org_id 62d62893487c500c27f72e36 --repo_id 5822285 --state opened
-python codeup.py get_merge_request --org_id 62d62893487c500c27f72e36 --repo_id 5822285 --local_id 584
+python codeup.py get_change_request --org_id 62d62893487c500c27f72e36 --repo_id 5822285 --local_id 584
 ```
 
 ## Claude 使用方式
@@ -314,7 +375,7 @@ codeup-skill/
 │   ├── code-management.md          # 代码管理 API 参考
 │   └── organization-management.md  # 组织管理 API 参考
 └── scripts/
-    ├── codeup.py              # 统一入口脚本（27个子命令）
+    ├── codeup.py              # 统一入口脚本（34个子命令）
     ├── codeup_client.py       # Codeup API 客户端
     └── requirements.txt       # 依赖：requests>=2.28.0
 ```
