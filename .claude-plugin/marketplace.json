@@ -12,7 +12,7 @@
     {
       "name": "abc-development-plugin",
       "description": "ABC 敏捷研发管理平台集成插件，通过 TAPD API 实现研发全流程管理，包含 TAPD、Apifox、Codeup 三个 skill",
-      "version": "0.3.1",
+      "version": "0.4.0",
       "author": {
         "name": "ABC Team",
         "email": "bubble@abcyun.cn"
