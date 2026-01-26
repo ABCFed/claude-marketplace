@@ -244,12 +244,31 @@ class CodeupClient:
             params={"path": path, "ref": branch, "page": page, "limit": limit}
         )
 
-    def compare(self, org_id: str, repo_id: str, source: str, target: str) -> dict:
-        """Compare code between two branches/tags"""
+    def compare(self, org_id: str, repo_id: str, from_ref: str, to_ref: str,
+                source_type: str = None, target_type: str = None,
+                straight: str = None) -> dict:
+        """Compare code between branches, tags, or commits
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            from_ref: Source reference (branch name, tag, or commit SHA)
+            to_ref: Target reference (branch name, tag, or commit SHA)
+            source_type: Type of source reference (branch/tag/None for commit)
+            target_type: Type of target reference (branch/tag/None for commit)
+            straight: Use merge-base (false) or not (true). Default: false
+        """
+        params = {"from": from_ref, "to": to_ref}
+        if source_type:
+            params["sourceType"] = source_type
+        if target_type:
+            params["targetType"] = target_type
+        if straight is not None:
+            params["straight"] = straight
         return self._make_request(
             "GET",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/compare",
-            params={"from": source, "to": target}
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/compares",
+            params=params
         )
 
     # ==================== Merge Request ====================

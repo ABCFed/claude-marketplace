@@ -226,10 +226,12 @@ def cmd_list_files(args):
 
 
 def cmd_compare(args):
-    """Compare code between branches"""
+    """Compare code between branches, tags, or commits"""
     client = CodeupClient()
     result = client.compare(
-        args.org_id, args.repo_id, args.source, args.target
+        args.org_id, args.repo_id, args.from_ref, args.to_ref,
+        source_type=args.source_type, target_type=args.target_type,
+        straight=args.straight
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -414,11 +416,14 @@ def build_parser():
     p.add_argument("--page", type=int, default=1, help="Page number (default: 1)")
     p.add_argument("--limit", type=int, default=100, help="Items per page (default: 100)")
 
-    p = subparsers.add_parser("compare", help="Compare code between branches")
+    p = subparsers.add_parser("compare", help="Compare code between branches, tags, or commits")
     p.add_argument("--org_id", required=True, help="Organization ID")
     p.add_argument("--repo_id", required=True, help="Repository ID")
-    p.add_argument("--source", required=True, help="Source branch/tag")
-    p.add_argument("--target", required=True, help="Target branch/tag")
+    p.add_argument("--from", required=True, dest="from_ref", help="Source branch/tag/commit")
+    p.add_argument("--to", required=True, dest="to_ref", help="Target branch/tag/commit")
+    p.add_argument("--source_type", choices=["branch", "tag"], help="Source type (branch/tag)")
+    p.add_argument("--target_type", choices=["branch", "tag"], help="Target type (branch/tag)")
+    p.add_argument("--straight", choices=["true", "false"], help="Use merge-base (false) or not (true)")
 
     # ==================== Merge Request Commands ====================
 

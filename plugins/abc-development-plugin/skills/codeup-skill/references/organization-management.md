@@ -8,12 +8,6 @@
 python codeup.py get_current_user
 ```
 
-### 获取当前组织
-
-```bash
-python codeup.py get_current_organization
-```
-
 ### 列出用户所属组织
 
 ```bash
@@ -65,8 +59,8 @@ python codeup.py list_roles --org_id <org_id>
 ### 1. 获取组织信息和成员列表
 
 ```bash
-# 获取当前组织
-python codeup.py get_current_organization
+# 列出用户所属组织
+python codeup.py list_organizations
 
 # 列出所有成员
 python codeup.py list_members --org_id <org_id>

@@ -34,8 +34,7 @@ python codeup.py <command> [参数]
 | 命令 | 说明 |
 |------|------|
 | `get_current_user` | 获取当前用户信息 |
-| `get_current_organization` | 获取当前组织信息 |
-| `list_organizations` | 列出用户所属组织 |
+| `list_organizations` | 列出用户所属组织（获取 org_id） |
 
 ### 部门与成员
 | 命令 | 说明 |
@@ -88,10 +87,7 @@ python codeup.py <command> [参数]
 # 获取当前用户
 python codeup.py get_current_user
 
-# 获取当前组织
-python codeup.py get_current_organization
-
-# 列出用户所属组织
+# 列出用户所属组织（获取 org_id）
 python codeup.py list_organizations
 ```
 
@@ -178,8 +174,8 @@ python codeup.py list_files \
 python codeup.py compare \
     --org_id 5f9a8b7c6d8e1a2c3d4e5f6g \
     --repo_id 789012 \
-    --source feature/new-feature \
-    --target master
+    --from feature/new-feature \
+    --to master
 ```
 
 ### 合并请求管理
@@ -254,7 +250,7 @@ python codeup.py get_merge_request --org_id $ORG_ID --repo_id $REPO_ID --mr_id $
 
 当用户需要与云效交互时：
 
-1. **获取 org_id**：先调用 `get_current_organization` 获取组织 ID
+1. **获取 org_id**：先调用 `list_organizations` 获取组织列表，选择目标组织
 2. **获取 repo_id**：调用 `list_repositories` 列出仓库，选择目标仓库
 3. **构建命令**：根据需求构建相应参数
 4. **执行脚本**：使用 Bash 工具运行
@@ -266,7 +262,7 @@ python codeup.py get_merge_request --org_id $ORG_ID --repo_id $REPO_ID --mr_id $
 
 Claude:
 1. cd ~/.claude/skills/codeup-skill/scripts
-2. python codeup.py get_current_organization  # 获取 org_id
+2. python codeup.py list_organizations  # 获取 org_id
 3. python codeup.py list_members --org_id $ORG_ID  # 列出成员
 4. 分析返回结果并展示
 ```
@@ -276,8 +272,8 @@ Claude:
 ### 1. 如何获取 org_id 和 repo_id？
 
 ```bash
-# 获取当前组织信息（包含 org_id）
-python codeup.py get_current_organization
+# 列出用户所属组织（包含 org_id）
+python codeup.py list_organizations
 
 # 列出仓库（包含 repo_id）
 python codeup.py list_repositories --org_id <org_id>
