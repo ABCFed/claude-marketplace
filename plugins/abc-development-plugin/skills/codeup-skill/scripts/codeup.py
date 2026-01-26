@@ -38,6 +38,7 @@ Commands:
     get_merge_request          Get merge request details
     list_merge_requests        List merge requests
     create_merge_request       Create a merge request
+    close_merge_request        Close a merge request
     create_merge_request_comment   Add comment to MR
     list_merge_request_comments    List MR comments
     list_merge_request_patch_sets  List MR patch sets (commits)
@@ -271,6 +272,13 @@ def cmd_create_merge_request(args):
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
+def cmd_close_merge_request(args):
+    """Close a merge request"""
+    client = CodeupClient()
+    result = client.close_merge_request(args.org_id, args.repo_id, args.local_id)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
 def cmd_create_merge_request_comment(args):
     """Add a comment to merge request"""
     client = CodeupClient()
@@ -475,6 +483,11 @@ def build_parser():
     p.add_argument("--target_branch", required=True, help="Target branch")
     p.add_argument("--description", help="MR description")
 
+    p = subparsers.add_parser("close_merge_request", help="Close a merge request")
+    p.add_argument("--org_id", required=True, help="Organization ID")
+    p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
+
     p = subparsers.add_parser("create_merge_request_comment", help="Add comment to merge request")
     p.add_argument("--org_id", required=True, help="Organization ID")
     p.add_argument("--repo_id", required=True, help="Repository ID")
@@ -547,6 +560,7 @@ def main():
         "get_merge_request": cmd_get_merge_request,
         "list_merge_requests": cmd_list_merge_requests,
         "create_merge_request": cmd_create_merge_request,
+        "close_merge_request": cmd_close_merge_request,
         "create_merge_request_comment": cmd_create_merge_request_comment,
         "list_merge_request_comments": cmd_list_merge_request_comments,
         "list_merge_request_patch_sets": cmd_list_merge_request_patch_sets,

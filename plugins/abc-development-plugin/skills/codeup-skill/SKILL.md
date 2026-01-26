@@ -76,6 +76,7 @@ python codeup.py <command> [参数]
 | `get_merge_request` | 获取 MR 详情 |
 | `list_merge_requests` | 列出 MR |
 | `create_merge_request` | 创建 MR |
+| `close_merge_request` | 关闭 MR |
 | `create_merge_request_comment` | 添加 MR 评论 |
 | `list_merge_request_comments` | 列出 MR 评论 |
 | `list_merge_request_patch_sets` | 列出 MR 补丁集 |
@@ -210,6 +211,12 @@ python codeup.py create_merge_request \
     --source_branch feature/new-feature \
     --target_branch master \
     --description "实现用户登录功能"
+
+# 关闭 MR
+python codeup.py close_merge_request \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id 5822285 \
+    --local_id 584
 
 # 添加 MR 评论
 python codeup.py create_merge_request_comment \

@@ -449,6 +449,19 @@ class CodeupClient:
             data=data
         )
 
+    def close_merge_request(self, org_id: str, repo_id: str, local_id: int) -> dict:
+        """Close a merge request
+
+        Args:
+            org_id: Organization ID
+            repo_id: Repository ID
+            local_id: Local MR ID (sequence number)
+        """
+        return self._make_request(
+            "POST",
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/close"
+        )
+
     def create_merge_request_comment(self, org_id: str, repo_id: str, local_id: int,
                                      content: str, comment_type: str = "GLOBAL_COMMENT",
                                      draft: bool = False, patchset_biz_id: str = None,
