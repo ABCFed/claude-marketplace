@@ -51,6 +51,50 @@ python scripts/codeup.py <command> [参数]
 | `get_repository` | 获取仓库详情 |
 | `list_repositories` | 列出仓库 |
 
+#### repo_id 参数格式（通用）
+
+**所有支持 `repo_id` 参数的命令都支持两种格式**：
+
+| 格式 | 示例 | 说明                              |
+|------|------|---------------------------------|
+| 数字 ID | `5822285` | 仓库的数字 ID                        |
+| URL-Encoder 路径 | `abcyun%2Fabc-fed-common%2Fabc-nestjs-lib` | 编码后的 `namespace/group/repoName` |
+
+**支持的命令**：
+- 仓库操作: `get_repository`
+- 分支操作: `get_branch`, `create_branch`, `delete_branch`, `list_branches`
+- 文件操作: `get_file`, `create_file`, `update_file`, `delete_file`, `list_files`
+- 代码对比: `compare`
+- MR 操作: `get_change_request`, `create_merge_request`, `close_merge_request`, `merge_change_request`, `reopen_change_request`, `review_change_request`, `update_change_request`, `get_change_request_tree`, `create_merge_request_comment`, `list_merge_request_comments`, `delete_change_request_comment`, `update_change_request_comment`, `list_merge_request_patch_sets`
+
+**使用示例**：
+```bash
+# 方式1: 使用数字 ID
+python scripts/codeup.py get_repository --org_id 62d62893487c500c27f72e36 --repo_id 5822285
+
+# 方式2: 使用 URL-Encoder 编码路径
+python scripts/codeup.py get_repository \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id abcyun%2Fabc-fed-common%2Fabc-nestjs-lib
+
+# 分支操作也支持
+python scripts/codeup.py list_branches \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id abcyun%2Fabc-fed-common%2Fabc-nestjs-lib
+
+# 文件操作也支持
+python scripts/codeup.py get_file \
+    --org_id 62d62893487c500c27f72e36 \
+    --repo_id abcyun%2Fabc-fed-common%2Fabc-nestjs-lib \
+    --file_path README.md \
+    --branch master
+```
+
+**使用场景**: 当用户提供仓库 URL 时（如 `https://codeup.aliyun.com/abcyun/abc-fed-common/abc-nestjs-lib/change/1`），LLM 可以：
+1. 提取路径: `abcyun/abc-fed-common/abc-nestjs-lib`
+2. URL 编码 `/` 为 `%2F`: `abcyun%2Fabc-fed-common%2Fabc-nestjs-lib`
+3. 直接调用任何命令，无需先查询 repo_id
+
 ### 分支操作
 | 命令 | 说明 |
 |------|------|
@@ -322,7 +366,9 @@ python scripts/codeup.py get_change_request --org_id 62d62893487c500c27f72e36 --
 当用户需要与云效交互时：
 
 1. **获取 org_id**：先调用 `list_organizations` 获取组织列表，选择目标组织
-2. **获取 repo_id**：调用 `list_repositories` 列出仓库，选择目标仓库
+2. **获取 repo_id**：
+   - 方式一：调用 `list_repositories` 列出仓库，选择目标仓库获取数字 ID
+   - 方式二：从用户提供的 URL 或路径中提取 `namespace/group(可选)/repoName`，然后使用，
 3. **构建命令**：根据需求构建相应参数
 4. **执行脚本**：使用 Bash 工具运行
 5. **处理结果**：解析输出，分析数据

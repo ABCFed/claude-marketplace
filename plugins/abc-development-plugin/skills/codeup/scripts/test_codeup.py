@@ -29,6 +29,7 @@ import os
 import sys
 import json
 import unittest
+import urllib.parse
 from unittest.mock import patch, MagicMock
 
 # 添加脚本目录到路径
@@ -612,6 +613,62 @@ class TestFilePathEncoding(unittest.TestCase):
         self.assertIn("src%2Fmain%2Fjava%2FApp.java", url)
 
 
+class TestUrlEncodedRepoPath(unittest.TestCase):
+    """URL-Encoder 仓库路径格式测试"""
+
+    def setUp(self):
+        os.environ["YUNXIAO_ACCESS_TOKEN"] = "test_token"
+        self.client = CodeupClient()
+
+    @patch("requests.request")
+    def test_get_repository_with_url_encoded_path(self, mock_request):
+        """测试使用 URL-Encoder 编码的路径格式获取仓库"""
+        mock_response_data = {
+            "id": 2835387,
+            "path": "abcyun/abc-nestjs-lib",
+            "name": "abc-nestjs-lib",
+            "namespace": {"path": "abcyun"}
+        }
+        mock_request.return_value = MockResponse(mock_response_data)
+
+        # 使用 URL-Encoder 编码的路径格式
+        encoded_path = "abcyun%2Fabc-nestjs-lib"
+        result = self.client.get_repository("org_123", encoded_path)
+
+        # 验证请求 URL 包含编码后的路径
+        mock_request.assert_called_once_with(
+            method="GET",
+            url="https://openapi-rdc.aliyuncs.com/oapi/v1/codeup/organizations/org_123/repositories/abcyun%2Fabc-nestjs-lib",
+            headers=self.client.headers,
+            params=None,
+            json=None
+        )
+        self.assertEqual(result["id"], 2835387)
+        self.assertEqual(result["path"], "abcyun/abc-nestjs-lib")
+
+    @patch("requests.request")
+    def test_get_repository_with_multi_level_namespace(self, mock_request):
+        """测试使用多级命名空间的 URL-Encoder 编码路径"""
+        mock_response_data = {
+            "id": 1234567,
+            "path": "abcyun/abc-fed-common/abc-nestjs-lib",
+            "name": "abc-nestjs-lib",
+            "namespace": {"path": "abcyun/abc-fed-common"}
+        }
+        mock_request.return_value = MockResponse(mock_response_data)
+
+        # 使用多级命名空间的 URL-Encoder 编码路径
+        encoded_path = "abcyun%2Fabc-fed-common%2Fabc-nestjs-lib"
+        result = self.client.get_repository("org_123", encoded_path)
+
+        # 验证请求 URL 包含编码后的路径
+        mock_request.assert_called_once()
+        call_kwargs = mock_request.call_args.kwargs
+        url = call_kwargs["url"]
+        self.assertIn("abcyun%2Fabc-fed-common%2Fabc-nestjs-lib", url)
+        self.assertEqual(result["id"], 1234567)
+
+
 class TestArgumentValidation(unittest.TestCase):
     """参数验证测试"""
 
@@ -713,6 +770,123 @@ class IntegrationTestCodeupClient(unittest.TestCase):
                 self.test_org_id, self.test_repo_id, local_id
             )
             self.assertIsInstance(result, list)
+
+    def test_integration_get_repository_with_url_encoded_path(self):
+        """集成测试 - 使用 URL-Encoder 路径格式获取仓库详情
+
+        测试使用 namespace/repoName 的 URL-Encoder 编码格式（如 "abcyun%2Fabc-nestjs-lib"）
+        是否能正确返回仓库信息，避免需要预先查询 repo_id。
+
+        根据 Codeup 官方文档，repositoryId 参数支持两种格式：
+        1. 数字 ID: "2835387"
+        2. URL-Encoder 编码的路径: "namespace%2FrepoName"
+
+        测试策略：
+        1. 首先列出仓库获取一个真实存在的仓库
+        2. 检查仓库路径是否包含命名空间（包含斜杠）
+        3. 如果有命名空间，测试 URL-Encoder 格式
+        4. 如果没有命名空间，记录情况并跳过
+        """
+        print("\n=== 测试 URL-Encoder 路径格式 ===")
+
+        # 步骤1: 列出仓库获取真实存在的仓库
+        repos = self.client.list_repositories(self.test_org_id, per_page=10)
+        self.assertIsInstance(repos, list)
+        self.assertGreater(len(repos), 0, "组织中至少应有一个仓库")
+
+        # 获取第一个仓库的信息
+        test_repo = repos[0]
+        repo_id_numeric = test_repo["id"]
+        repo_path = test_repo.get("path", "")  # 格式: namespace/repoName 或 simple-name
+
+        print(f"  测试仓库路径: {repo_path}")
+        print(f"  测试仓库数字 ID: {repo_id_numeric}")
+
+        # 步骤2: 检查是否有命名空间
+        if "/" not in repo_path:
+            print(f"  跳过: 仓库 '{repo_path}' 没有命名空间前缀")
+            print("  URL-Encoder 路径格式仅适用于包含命名空间的仓库 (格式: namespace/repoName)")
+            print("  例如: 'abcyun/abc-nestjs-lib' -> 'abcyun%2Fabc-nestjs-lib'")
+            return  # 跳过测试，不是错误
+
+        # 步骤3: 使用数字 ID 获取仓库（作为基准）
+        result_numeric = self.client.get_repository(self.test_org_id, str(repo_id_numeric))
+        print(f"  数字 ID 方式返回: id={result_numeric['id']}, path={result_numeric['path']}")
+
+        # 步骤4: 使用 URL-Encoder 编码路径获取仓库
+        encoded_path = urllib.parse.quote(repo_path, safe="")
+        print(f"  URL-Encoder 编码: {encoded_path}")
+
+        try:
+            result_encoded = self.client.get_repository(self.test_org_id, encoded_path)
+
+            # 验证返回结果一致
+            self.assertIn("id", result_encoded)
+            self.assertIn("path", result_encoded)
+            self.assertEqual(
+                result_encoded["id"],
+                repo_id_numeric,
+                "URL-Encoder 方式应返回相同的数字 ID"
+            )
+            self.assertEqual(
+                result_encoded["path"],
+                repo_path,
+                "URL-Encoder 方式应返回相同的路径"
+            )
+
+            print(f"  URL-Encoder 方式返回: id={result_encoded['id']}, path={result_encoded['path']}")
+            print("  ✓ URL-Encoder 路径格式测试通过!")
+
+        except Exception as e:
+            # 如果失败，记录错误信息
+            print(f"  ✗ URL-Encoder 方式失败: {e}")
+            raise
+
+    def test_integration_get_repository_multi_level_namespace(self):
+        """集成测试 - 多级命名空间路径格式"""
+        print("\n=== 测试多级命名空间路径格式 ===")
+
+        # 列出仓库查找包含多级路径的仓库
+        repos = self.client.list_repositories(self.test_org_id, per_page=20)
+        multi_level_repos = [r for r in repos if "/" in r.get("path", "") and r["path"].count("/") > 1]
+
+        if multi_level_repos:
+            test_repo = multi_level_repos[0]
+            repo_path = test_repo["path"]
+            repo_id = test_repo["id"]
+
+            encoded_path = urllib.parse.quote(repo_path, safe="")
+
+            print(f"  多级路径仓库: {repo_path}")
+            print(f"  编码后: {encoded_path}")
+
+            try:
+                result = self.client.get_repository(self.test_org_id, encoded_path)
+                self.assertIn("id", result)
+                self.assertEqual(result["id"], repo_id)
+                print(f"  返回仓库 ID: {result['id']}")
+                print(f"  返回仓库路径: {result['path']}")
+                print("  ✓ 多级命名空间测试通过!")
+            except Exception as e:
+                print(f"  ✗ 多级命名空间测试失败: {e}")
+                raise
+        else:
+            print("  跳过: 组织中没有多级命名空间的仓库")
+
+    def test_integration_url_encoding(self):
+        """集成测试 - 验证 URL 编码功能（使用 urllib.parse）"""
+        print("\n=== 测试 URL 编码 ===")
+
+        test_cases = [
+            ("simple/repo", "simple%2Frepo"),
+            ("namespace/sub-name/repo-name", "namespace%2Fsub-name%2Frepo-name"),
+            ("abcyun/abc-fed-common/abc-nestjs-lib", "abcyun%2Fabc-fed-common%2Fabc-nestjs-lib"),
+        ]
+
+        for original, expected in test_cases:
+            encoded = urllib.parse.quote(original, safe="")
+            self.assertEqual(encoded, expected, f"编码 '{original}' 应得到 '{expected}'")
+            print(f"  ✓ '{original}' -> '{encoded}'")
 
 
 if __name__ == "__main__":
