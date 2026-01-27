@@ -12,9 +12,9 @@
 
 ```bash
 # 安装单个 skill
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox-skill
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
 ```
 
 **常用选项**：
@@ -31,13 +31,13 @@ npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/code
 
 ```bash
 # 安装到用户目录
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill --global
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --global
 
 # 指定 agent 安装
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill --agent codex
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --agent codex
 
 # 跳过确认提示
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill --yes
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --yes
 ```
 
 ### 通过插件市场安装（仅 Claude Code）
@@ -55,13 +55,13 @@ claude
 
 ## 技能详情
 
-### tapd-skill
+### tapd
 
 TAPD 敏捷研发管理平台集成，通过 TAPD API 实现研发全流程管理。
 
 **安装**：
 ```bash
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
 ```
 
 **准备**：
@@ -85,13 +85,13 @@ source ~/.zshrc
 
 ---
 
-### apifox-skill
+### apifox
 
 ABC 医疗云 API 文档查询工具，读取和查询 ABC API 的 OpenAPI 规范文档（4,000+ 接口）。
 
 **安装**：
 ```bash
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox
 ```
 
 **准备**：
@@ -112,13 +112,13 @@ source ~/.zshrc
 
 ---
 
-### codeup-skill
+### codeup
 
 阿里云云效 Codeup 代码仓库管理工具集，通过 Codeup API 管理代码仓库、分支、文件和合并请求。
 
 **安装**：
 ```bash
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup-skill
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
 ```
 
 **准备**：

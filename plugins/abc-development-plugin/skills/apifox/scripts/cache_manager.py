@@ -19,7 +19,7 @@ class CacheManager:
     def _default_cache_dir() -> str:
         """获取默认缓存目录（插件 skill 目录下的 cache 文件夹）"""
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        # scripts/cache_manager.py -> skills/apifox-skill/cache
+        # scripts/cache_manager.py -> skills/apifox/cache
         return os.path.join(os.path.dirname(script_dir), "cache")
 
     CACHE_DIR = _default_cache_dir.__func__()

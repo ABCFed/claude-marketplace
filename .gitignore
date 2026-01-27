@@ -50,5 +50,5 @@ temp/
 *.tar.gz
 *.rar
 /.claude/settings.local.json
-/plugins/abc-development-plugin/skills/apifox-skill/cache/oas.json
-/plugins/abc-development-plugin/skills/apifox-skill/cache/oas_meta.json
+/plugins/abc-development-plugin/skills/apifox/cache/oas.json
+/plugins/abc-development-plugin/skills/apifox/cache/oas_meta.json

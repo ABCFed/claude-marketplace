@@ -24,8 +24,7 @@ export CURRENT_USER_NICK="你的昵称"               # 可选
 ## 使用方式
 
 ```bash
-cd ~/.claude/skills/tapd-skill/scripts
-python tapd.py <command> [参数]
+python scripts/tapd.py <command> [参数]
 ```
 
 所有命令默认输出 JSON 格式结果。
@@ -142,19 +141,19 @@ python tapd.py <command> [参数]
 
 ```bash
 # 查询指定需求
-python tapd.py get_stories_or_tasks --workspace_id 123 --entity_type stories --id 1167459320001114969
+python scripts/tapd.py get_stories_or_tasks --workspace_id 123 --entity_type stories --id 1167459320001114969
 
 # 模糊搜索需求
-python tapd.py get_stories_or_tasks --workspace_id 123 --entity_type stories --name "%登录%" --limit 20
+python scripts/tapd.py get_stories_or_tasks --workspace_id 123 --entity_type stories --name "%登录%" --limit 20
 
 # 查询指定状态的需求
-python tapd.py get_stories_or_tasks --workspace_id 123 --entity_type stories --v_status "已验收"
+python scripts/tapd.py get_stories_or_tasks --workspace_id 123 --entity_type stories --v_status "已验收"
 ```
 
 ### 创建需求
 
 ```bash
-python tapd.py create_story_or_task --workspace_id 123 \
+python scripts/tapd.py create_story_or_task --workspace_id 123 \
     --name "用户登录功能" \
     --description "## 需求描述\n用户可以通过账号密码登录系统" \
     --priority_label "高" \
@@ -165,7 +164,7 @@ python tapd.py create_story_or_task --workspace_id 123 \
 ### 更新需求状态
 
 ```bash
-python tapd.py update_story_or_task --workspace_id 123 \
+python scripts/tapd.py update_story_or_task --workspace_id 123 \
     --id 1167459320001114969 \
     --v_status "实现中"
 ```
@@ -173,13 +172,13 @@ python tapd.py update_story_or_task --workspace_id 123 \
 ### 查询缺陷
 
 ```bash
-python tapd.py get_bug --workspace_id 123 --title "%登录失败%" --priority_label "高"
+python scripts/tapd.py get_bug --workspace_id 123 --title "%登录失败%" --priority_label "高"
 ```
 
 ### 创建缺陷
 
 ```bash
-python tapd.py create_bug --workspace_id 123 \
+python scripts/tapd.py create_bug --workspace_id 123 \
     --title "登录页面显示异常" \
     --description "输入正确密码后提示错误" \
     --priority_label "高" \
@@ -190,10 +189,10 @@ python tapd.py create_bug --workspace_id 123 \
 
 ```bash
 # 查询迭代
-python tapd.py get_iterations --workspace_id 123
+python scripts/tapd.py get_iterations --workspace_id 123
 
 # 创建迭代
-python tapd.py create_iteration --workspace_id 123 \
+python scripts/tapd.py create_iteration --workspace_id 123 \
     --name "Sprint 1" \
     --startdate "2024-01-01" \
     --enddate "2024-01-14" \
@@ -204,10 +203,10 @@ python tapd.py create_iteration --workspace_id 123 \
 
 ```bash
 # 查询工时
-python tapd.py get_timesheets --workspace_id 123 --entity_type story --entity_id 1167459320001114969
+python scripts/tapd.py get_timesheets --workspace_id 123 --entity_type story --entity_id 1167459320001114969
 
 # 填写工时
-python tapd.py add_timesheets --workspace_id 123 \
+python scripts/tapd.py add_timesheets --workspace_id 123 \
     --entity_type story \
     --entity_id 1167459320001114969 \
     --timespent "4" \
@@ -219,12 +218,12 @@ python tapd.py add_timesheets --workspace_id 123 \
 
 ```bash
 # 查询评论
-python tapd.py get_comments --workspace_id 123 \
+python scripts/tapd.py get_comments --workspace_id 123 \
     --entry_type stories \
     --entry_id 1167459320001114969
 
 # 创建评论
-python tapd.py create_comments --workspace_id 123 \
+python scripts/tapd.py create_comments --workspace_id 123 \
     --entry_type stories \
     --entry_id 1167459320001114969 \
     --description "看起来不错，可以继续完善"
@@ -234,10 +233,10 @@ python tapd.py create_comments --workspace_id 123 \
 
 ```bash
 # 查询需求关联的缺陷
-python tapd.py get_related_bugs --workspace_id 123 --story_id 1167459320001114969
+python scripts/tapd.py get_related_bugs --workspace_id 123 --story_id 1167459320001114969
 
 # 创建关联
-python tapd.py entity_relations --workspace_id 123 \
+python scripts/tapd.py entity_relations --workspace_id 123 \
     --source_type story \
     --target_type bug \
     --source_id 1167459320001114969 \
@@ -248,33 +247,33 @@ python tapd.py entity_relations --workspace_id 123 \
 
 ```bash
 # 获取状态映射
-python tapd.py get_workflows_status_map --workspace_id 123 --system story
+python scripts/tapd.py get_workflows_status_map --workspace_id 123 --system story
 
 # 获取可流转状态
-python tapd.py get_workflows_all_transitions --workspace_id 123 --system story
+python scripts/tapd.py get_workflows_all_transitions --workspace_id 123 --system story
 ```
 
 ## 常用命令速查
 
 ```bash
 # 需求
-python tapd.py get_stories_or_tasks --workspace_id $WS_ID --entity_type stories
-python tapd.py create_story_or_task --workspace_id $WS_ID --name "标题"
-python tapd.py update_story_or_task --workspace_id $WS_ID --id $ID --v_status "状态"
+python scripts/tapd.py get_stories_or_tasks --workspace_id $WS_ID --entity_type stories
+python scripts/tapd.py create_story_or_task --workspace_id $WS_ID --name "标题"
+python scripts/tapd.py update_story_or_task --workspace_id $WS_ID --id $ID --v_status "状态"
 
 # 缺陷
-python tapd.py get_bug --workspace_id $WS_ID
-python tapd.py create_bug --workspace_id $WS_ID --title "标题"
+python scripts/tapd.py get_bug --workspace_id $WS_ID
+python scripts/tapd.py create_bug --workspace_id $WS_ID --title "标题"
 
 # 迭代
-python tapd.py get_iterations --workspace_id $WS_ID
-python tapd.py create_iteration --workspace_id $WS_ID --name "Sprint X" --startdate "2024-01-01" --enddate "2024-01-14"
+python scripts/tapd.py get_iterations --workspace_id $WS_ID
+python scripts/tapd.py create_iteration --workspace_id $WS_ID --name "Sprint X" --startdate "2024-01-01" --enddate "2024-01-14"
 
 # 工时
-python tapd.py add_timesheets --workspace_id $WS_ID --entity_type story --entity_id $ID --timespent 4 --spentdate "2024-01-08"
+python scripts/tapd.py add_timesheets --workspace_id $WS_ID --entity_type story --entity_id $ID --timespent 4 --spentdate "2024-01-08"
 
 # 评论
-python tapd.py create_comments --workspace_id $WS_ID --entry_type stories --entry_id $ID --description "评论内容"
+python scripts/tapd.py create_comments --workspace_id $WS_ID --entry_type stories --entry_id $ID --description "评论内容"
 ```
 
 ## 状态值说明
@@ -301,9 +300,8 @@ python tapd.py create_comments --workspace_id $WS_ID --entry_type stories --entr
 用户: "查看需求 1167459320001114969 的详情"
 
 Claude:
-1. cd ~/.claude/skills/tapd-skill/scripts
-2. python tapd.py get_stories_or_tasks --workspace_id 67459320 --entity_type stories --id 1167459320001114969
-3. 分析返回的需求信息
+1. python scripts/tapd.py get_stories_or_tasks --workspace_id 67459320 --entity_type stories --id 1167459320001114969
+2. 分析返回的需求信息
 ```
 
 ### 图片处理
@@ -336,7 +334,7 @@ Claude:
 **手动获取图片**（备用方式）：
 ```bash
 # 如果需要单独获取某张图片
-python tapd.py get_image --workspace_id 67459320 --image_path "/tfl/captures/2026-01/tapd_xxx.png"
+python scripts/tapd.py get_image --workspace_id 67459320 --image_path "/tfl/captures/2026-01/tapd_xxx.png"
 ```
 
 ## 文件结构

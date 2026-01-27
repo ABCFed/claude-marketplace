@@ -37,7 +37,7 @@ pip3 install requests
 
 ### 工作原理
 
-apifox-skill 直接通过 HTTP 请求调用 Apifox API：
+apifox 直接通过 HTTP 请求调用 Apifox API：
 
 1. **首次使用**：从 Apifox API 获取 OpenAPI 文档
 2. **本地缓存**：数据保存到插件目录下的 `cache/` 文件夹
@@ -57,11 +57,10 @@ source ~/.bashrc  # 或 source ~/.zshrc
 ## 使用方式
 
 ```bash
-cd ~/.claude/skills/apifox-skill/scripts
-./apifox <command> [参数]
+./scripts/apifox <command> [参数]
 ```
 
-> **兼容性说明**：`./apifox` 是一个 shell wrapper，会自动检测并使用系统中可用的 Python 解释器（python3 或 python），无需手动指定。
+> **说明**：`./scripts/apifox` 是 shell wrapper，会自动检测并使用系统中可用的 Python 解释器（python3 或 python）。
 
 所有命令默认返回 JSON 格式输出。
 
@@ -111,12 +110,12 @@ ABC 医疗云 API 文档包含以下模块：
 
 ```bash
 # 获取指定接口的完整定义
-./apifox get_path \
+./scripts/apifox get_path \
     --path "/api/global-auth/login/sms" \
     --method POST
 
 # 获取接口但不解析 $ref（更快）
-./apifox get_path \
+./scripts/apifox get_path \
     --path "/api/global-auth/login/sms" \
     --method POST \
     --include_refs false
@@ -126,56 +125,56 @@ ABC 医疗云 API 文档包含以下模块：
 
 ```bash
 # 搜索登录相关接口
-./apifox search_paths --keyword "login"
+./scripts/apifox search_paths --keyword "login"
 
 # 搜索 api 模块中的用户相关接口
-./apifox search_paths --keyword "user" --module api
+./scripts/apifox search_paths --keyword "user" --module api
 
 # 列出所有 POST 接口
-./apifox list_paths --method post --limit 20
+./scripts/apifox list_paths --method post --limit 20
 ```
 
 ### 模块查询
 
 ```bash
 # 列出所有模块及统计
-./apifox list_modules
+./scripts/apifox list_modules
 
 # 列出小程序接口（前 20 个）
-./apifox list_paths --module api-weapp --limit 20
+./scripts/apifox list_paths --module api-weapp --limit 20
 ```
 
 ### 统计信息
 
 ```bash
 # 查看基本统计
-./apifox stats
+./scripts/apifox stats
 
 # 查看详细统计（包含各模块详情）
-./apifox stats --detail
+./scripts/apifox stats --detail
 ```
 
 ### 缓存管理
 
 ```bash
 # 查看缓存状态
-./apifox cache_status
+./scripts/apifox cache_status
 
 # 刷新文档（强制从 API 重新获取最新数据）
-./apifox refresh_oas
+./scripts/apifox refresh_oas
 
 # 清除缓存
-./apifox clear_cache --force
+./scripts/apifox clear_cache --force
 ```
 
 ### 导出摘要
 
 ```bash
 # 导出所有 API 模块接口摘要到 Markdown
-./apifox export_summary --module api --output api_summary.md --format markdown
+./scripts/apifox export_summary --module api --output api_summary.md --format markdown
 
 # 导出为 JSON
-./apifox export_summary --output full_summary.json --format json
+./scripts/apifox export_summary --output full_summary.json --format json
 ```
 
 ## 输出格式
@@ -212,9 +211,9 @@ ABC 医疗云 API 文档包含以下模块：
 用户: "查看短信登录接口的定义"
 
 Claude:
-1. ./apifox search_paths --keyword "login sms"
+1. ./scripts/apifox search_paths --keyword "login sms"
 2. 从结果中找到相关接口路径
-3. ./apifox get_path --path "/api/global-auth/login/sms" --method POST
+3. ./scripts/apifox get_path --path "/api/global-auth/login/sms" --method POST
 4. 分析返回的请求/响应结构
 ```
 
@@ -231,7 +230,7 @@ Claude:
 
 ```bash
 # 配置环境变量后首次运行
-./apifox stats
+./scripts/apifox stats
 
 # 输出示例：
 # 正在从 Apifox 获取项目 4105462 的 OpenAPI 文档...
@@ -244,7 +243,7 @@ Claude:
 
 ```bash
 # 从本地缓存加载，秒级响应
-./apifox stats
+./scripts/apifox stats
 # 从本地缓存加载 OpenAPI 数据...
 ```
 
@@ -252,7 +251,7 @@ Claude:
 
 ```bash
 # 强制从 API 重新获取最新文档
-./apifox refresh_oas
+./scripts/apifox refresh_oas
 
 # 输出示例：
 # 正在刷新 OpenAPI 文档...
@@ -264,7 +263,7 @@ Claude:
 ### 查看缓存状态
 
 ```bash
-./apifox cache_status
+./scripts/apifox cache_status
 ```
 
 ## 文件结构
