@@ -541,17 +541,30 @@ class CodeupClient:
             f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/diffs/patches"
         )
 
-    def merge_change_request(self, org_id: str, repo_id: str, local_id: int) -> dict:
+    def merge_change_request(self, org_id: str, repo_id: str, local_id: int,
+                             merge_message: str = None, merge_type: str = None,
+                             remove_source_branch: bool = None) -> dict:
         """Merge a merge request
 
         Args:
             org_id: Organization ID
             repo_id: Repository ID
             local_id: Local MR ID
+            merge_message: Merge commit message
+            merge_type: Merge type - ff-only, no-fast-forward, squash, rebase
+            remove_source_branch: Whether to delete source branch after merge
         """
+        data = {}
+        if merge_message is not None:
+            data["mergeMessage"] = merge_message
+        if merge_type is not None:
+            data["mergeType"] = merge_type
+        if remove_source_branch is not None:
+            data["removeSourceBranch"] = remove_source_branch
         return self._make_request(
             "POST",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/merge"
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/merge",
+            data=data
         )
 
     def reopen_change_request(self, org_id: str, repo_id: str, local_id: int) -> dict:
@@ -568,19 +581,25 @@ class CodeupClient:
         )
 
     def review_change_request(self, org_id: str, repo_id: str, local_id: int,
-                              decision: str, comment: str = None) -> dict:
+                              review_opinion: str = None, review_comment: str = None,
+                              submit_draft_comment_ids: list = None) -> dict:
         """Review (approve/reject) a merge request
 
         Args:
             org_id: Organization ID
             repo_id: Repository ID
             local_id: Local MR ID
-            decision: Review decision - APPROVE, REJECT, or ABSTAIN
-            comment: Review comment (optional)
+            review_opinion: Review decision - PASS, NOT_PASS
+            review_comment: Review comment
+            submit_draft_comment_ids: List of draft comment IDs to submit
         """
-        data = {"decision": decision}
-        if comment:
-            data["comment"] = comment
+        data = {}
+        if review_opinion is not None:
+            data["reviewOpinion"] = review_opinion
+        if review_comment is not None:
+            data["reviewComment"] = review_comment
+        if submit_draft_comment_ids is not None:
+            data["submitDraftCommentIds"] = submit_draft_comment_ids
         return self._make_request(
             "POST",
             f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/review",
@@ -610,48 +629,57 @@ class CodeupClient:
         )
 
     def get_change_request_tree(self, org_id: str, repo_id: str, local_id: int,
-                                 page: int = 1, per_page: int = 50) -> dict:
+                                 from_patch_set_id: str, to_patch_set_id: str) -> dict:
         """Get changed files tree of a merge request
 
         Args:
             org_id: Organization ID
             repo_id: Repository ID
             local_id: Local MR ID
-            page: Page number (default: 1)
-            per_page: Items per page (default: 50)
+            from_patch_set_id: Version ID of the merge target
+            to_patch_set_id: Version ID of the merge source
         """
         return self._make_request(
             "GET",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/tree",
-            params={"page": page, "perPage": per_page}
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/diffs/changeTree",
+            params={"fromPatchSetId": from_patch_set_id, "toPatchSetId": to_patch_set_id}
         )
 
-    def delete_change_request_comment(self, org_id: str, repo_id: str,
+    def delete_change_request_comment(self, org_id: str, repo_id: str, local_id: int,
                                       comment_biz_id: str) -> dict:
         """Delete a comment on merge request
 
         Args:
             org_id: Organization ID
             repo_id: Repository ID
+            local_id: Local MR ID
             comment_biz_id: Comment biz ID
         """
         return self._make_request(
             "DELETE",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/comments/{comment_biz_id}"
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/comments/{comment_biz_id}"
         )
 
-    def update_change_request_comment(self, org_id: str, repo_id: str,
-                                      comment_biz_id: str, content: str) -> dict:
+    def update_change_request_comment(self, org_id: str, repo_id: str, local_id: int,
+                                      comment_biz_id: str, content: str = None,
+                                      resolved: bool = None) -> dict:
         """Update a comment on merge request
 
         Args:
             org_id: Organization ID
             repo_id: Repository ID
+            local_id: Local MR ID
             comment_biz_id: Comment biz ID
             content: New comment content
+            resolved: Is resolved
         """
+        data = {}
+        if content is not None:
+            data["content"] = content
+        if resolved is not None:
+            data["resolved"] = resolved
         return self._make_request(
             "PUT",
-            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/comments/{comment_biz_id}",
-            data={"content": content}
+            f"/oapi/v1/codeup/organizations/{org_id}/repositories/{repo_id}/changeRequests/{local_id}/comments/{comment_biz_id}",
+            data=data
         )

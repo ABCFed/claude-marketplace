@@ -331,7 +331,11 @@ def cmd_list_merge_request_patch_sets(args):
 def cmd_merge_change_request(args):
     """Merge a merge request"""
     client = CodeupClient()
-    result = client.merge_change_request(args.org_id, args.repo_id, args.local_id)
+    result = client.merge_change_request(
+        args.org_id, args.repo_id, args.local_id,
+        merge_message=args.merge_message, merge_type=args.merge_type,
+        remove_source_branch=args.remove_source_branch
+    )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
@@ -347,7 +351,8 @@ def cmd_review_change_request(args):
     client = CodeupClient()
     result = client.review_change_request(
         args.org_id, args.repo_id, args.local_id,
-        args.decision, args.comment
+        review_opinion=args.review_opinion, review_comment=args.review_comment,
+        submit_draft_comment_ids=args.submit_draft_comment_ids
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -367,7 +372,7 @@ def cmd_get_change_request_tree(args):
     client = CodeupClient()
     result = client.get_change_request_tree(
         args.org_id, args.repo_id, args.local_id,
-        page=args.page, per_page=args.per_page
+        from_patch_set_id=args.from_patch_set_id, to_patch_set_id=args.to_patch_set_id
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -376,7 +381,7 @@ def cmd_delete_change_request_comment(args):
     """Delete a comment on merge request"""
     client = CodeupClient()
     result = client.delete_change_request_comment(
-        args.org_id, args.repo_id, args.comment_biz_id
+        args.org_id, args.repo_id, args.local_id, args.comment_biz_id
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -394,7 +399,7 @@ def cmd_update_change_request_comment(args):
         content = sys.stdin.read()
 
     result = client.update_change_request_comment(
-        args.org_id, args.repo_id, args.comment_biz_id, content
+        args.org_id, args.repo_id, args.local_id, args.comment_biz_id, content
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -599,6 +604,11 @@ def build_parser():
     p.add_argument("--org_id", required=True, help="Organization ID")
     p.add_argument("--repo_id", required=True, help="Repository ID")
     p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
+    p.add_argument("--merge_message", help="Merge commit message")
+    p.add_argument("--merge_type", choices=["ff-only", "no-fast-forward", "squash", "rebase"],
+                    help="Merge type")
+    p.add_argument("--remove_source_branch", action="store_true",
+                    help="Delete source branch after merge")
 
     p = subparsers.add_parser("reopen_change_request", help="Reopen a closed merge request")
     p.add_argument("--org_id", required=True, help="Organization ID")
@@ -609,9 +619,9 @@ def build_parser():
     p.add_argument("--org_id", required=True, help="Organization ID")
     p.add_argument("--repo_id", required=True, help="Repository ID")
     p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
-    p.add_argument("--decision", required=True, choices=["APPROVE", "REJECT", "ABSTAIN"],
-                    help="Review decision")
-    p.add_argument("--comment", help="Review comment (optional)")
+    p.add_argument("--review_opinion", choices=["PASS", "NOT_PASS"], help="Review decision")
+    p.add_argument("--review_comment", help="Review comment")
+    p.add_argument("--submit_draft_comment_ids", nargs="+", help="Draft comment IDs to submit")
 
     p = subparsers.add_parser("update_change_request", help="Update a merge request")
     p.add_argument("--org_id", required=True, help="Organization ID")
@@ -624,17 +634,19 @@ def build_parser():
     p.add_argument("--org_id", required=True, help="Organization ID")
     p.add_argument("--repo_id", required=True, help="Repository ID")
     p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
-    p.add_argument("--page", type=int, default=1, help="Page number (default: 1)")
-    p.add_argument("--per_page", type=int, default=50, help="Items per page (default: 50)")
+    p.add_argument("--from_patch_set_id", required=True, help="Version ID of the merge target")
+    p.add_argument("--to_patch_set_id", required=True, help="Version ID of the merge source")
 
     p = subparsers.add_parser("delete_change_request_comment", help="Delete a comment on merge request")
     p.add_argument("--org_id", required=True, help="Organization ID")
     p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
     p.add_argument("--comment_biz_id", required=True, help="Comment biz ID")
 
     p = subparsers.add_parser("update_change_request_comment", help="Update a comment on merge request")
     p.add_argument("--org_id", required=True, help="Organization ID")
     p.add_argument("--repo_id", required=True, help="Repository ID")
+    p.add_argument("--local_id", type=int, required=True, help="Local MR ID")
     p.add_argument("--comment_biz_id", required=True, help="Comment biz ID")
     p.add_argument("--content", help="Comment content (or use --content-file or stdin)")
     p.add_argument("--content-file", help="File path to read content from")

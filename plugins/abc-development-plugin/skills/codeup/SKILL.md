@@ -291,7 +291,9 @@ python scripts/codeup.py list_merge_request_patch_sets \
 python scripts/codeup.py merge_change_request \
     --org_id 62d62893487c500c27f72e36 \
     --repo_id 5822285 \
-    --local_id 584
+    --local_id 584 \
+    --merge_type "no-fast-forward" \
+    --remove_source_branch
 
 # 重新打开已关闭的 MR
 python scripts/codeup.py reopen_change_request \
@@ -304,16 +306,16 @@ python scripts/codeup.py review_change_request \
     --org_id 62d62893487c500c27f72e36 \
     --repo_id 5822285 \
     --local_id 584 \
-    --decision APPROVE \
-    --comment "代码审查通过"
+    --review_opinion PASS \
+    --review_comment "代码审查通过"
 
 # 审查 MR（拒绝）
 python scripts/codeup.py review_change_request \
     --org_id 62d62893487c500c27f72e36 \
     --repo_id 5822285 \
     --local_id 584 \
-    --decision REJECT \
-    --comment "需要修复单元测试"
+    --review_opinion NOT_PASS \
+    --review_comment "需要修复单元测试"
 
 # 更新 MR 标题
 python scripts/codeup.py update_change_request \
@@ -326,18 +328,22 @@ python scripts/codeup.py update_change_request \
 python scripts/codeup.py get_change_request_tree \
     --org_id 62d62893487c500c27f72e36 \
     --repo_id 5822285 \
-    --local_id 584
+    --local_id 584 \
+    --from_patch_set_id patch_set_1 \
+    --to_patch_set_id patch_set_2
 
 # 删除 MR 评论
 python scripts/codeup.py delete_change_request_comment \
     --org_id 62d62893487c500c27f72e36 \
     --repo_id 5822285 \
+    --local_id 584 \
     --comment_biz_id 682d5c6d8a3b400a8c4b1234
 
 # 更新 MR 评论
 python scripts/codeup.py update_change_request_comment \
     --org_id 62d62893487c500c27f72e36 \
     --repo_id 5822285 \
+    --local_id 584 \
     --comment_biz_id 682d5c6d8a3b400a8c4b1234 \
     --content "更新后的评论内容"
 ```

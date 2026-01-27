@@ -457,12 +457,19 @@ class TestCodeupClient(unittest.TestCase):
         mock_response_data = {"state": "MERGED"}
         mock_request.return_value = MockResponse(mock_response_data)
 
-        result = self.client.merge_change_request("org_123", "repo_456", 1)
+        result = self.client.merge_change_request(
+            "org_123", "repo_456", 1,
+            merge_message="Merge commit", merge_type="no-fast-forward", remove_source_branch=True
+        )
 
         mock_request.assert_called_once()
         call_kwargs = mock_request.call_args.kwargs
         self.assertEqual(call_kwargs["method"], "POST")
         self.assertIn("/merge", call_kwargs["url"])
+        data = call_kwargs["json"]
+        self.assertEqual(data["mergeMessage"], "Merge commit")
+        self.assertEqual(data["mergeType"], "no-fast-forward")
+        self.assertEqual(data["removeSourceBranch"], True)
 
     @patch("requests.request")
     def test_reopen_change_request(self, mock_request):
@@ -480,32 +487,38 @@ class TestCodeupClient(unittest.TestCase):
     @patch("requests.request")
     def test_review_change_request_approve(self, mock_request):
         """测试审查 MR - 批准"""
-        mock_response_data = {"decision": "APPROVE"}
+        mock_response_data = {"result": True}
         mock_request.return_value = MockResponse(mock_response_data)
 
-        result = self.client.review_change_request("org_123", "repo_456", 1, "APPROVE", "LGTM")
+        result = self.client.review_change_request(
+            "org_123", "repo_456", 1,
+            review_opinion="PASS", review_comment="LGTM"
+        )
 
         mock_request.assert_called_once()
         call_kwargs = mock_request.call_args.kwargs
         self.assertEqual(call_kwargs["method"], "POST")
         self.assertIn("/review", call_kwargs["url"])
         data = call_kwargs["json"]
-        self.assertEqual(data["decision"], "APPROVE")
-        self.assertEqual(data["comment"], "LGTM")
+        self.assertEqual(data["reviewOpinion"], "PASS")
+        self.assertEqual(data["reviewComment"], "LGTM")
 
     @patch("requests.request")
     def test_review_change_request_reject(self, mock_request):
         """测试审查 MR - 拒绝"""
-        mock_response_data = {"decision": "REJECT"}
+        mock_response_data = {"result": True}
         mock_request.return_value = MockResponse(mock_response_data)
 
-        result = self.client.review_change_request("org_123", "repo_456", 1, "REJECT")
+        result = self.client.review_change_request(
+            "org_123", "repo_456", 1,
+            review_opinion="NOT_PASS"
+        )
 
         mock_request.assert_called_once()
         call_kwargs = mock_request.call_args.kwargs
         data = call_kwargs["json"]
-        self.assertEqual(data["decision"], "REJECT")
-        self.assertNotIn("comment", data)
+        self.assertEqual(data["reviewOpinion"], "NOT_PASS")
+        self.assertNotIn("reviewComment", data)
 
     @patch("requests.request")
     def test_update_change_request(self, mock_request):
@@ -536,40 +549,47 @@ class TestCodeupClient(unittest.TestCase):
         ]
         mock_request.return_value = MockResponse(mock_response_data)
 
-        result = self.client.get_change_request_tree("org_123", "repo_456", 1)
+        result = self.client.get_change_request_tree(
+            "org_123", "repo_456", 1,
+            from_patch_set_id="patch_set_1", to_patch_set_id="patch_set_2"
+        )
 
         mock_request.assert_called_once()
         call_kwargs = mock_request.call_args.kwargs
         self.assertEqual(call_kwargs["method"], "GET")
-        self.assertIn("/tree", call_kwargs["url"])
+        self.assertIn("/diffs/changeTree", call_kwargs["url"])
+        self.assertEqual(call_kwargs["params"]["fromPatchSetId"], "patch_set_1")
+        self.assertEqual(call_kwargs["params"]["toPatchSetId"], "patch_set_2")
 
     @patch("requests.request")
     def test_delete_change_request_comment(self, mock_request):
         """测试删除 MR 评论"""
-        mock_response_data = {"success": True}
+        mock_response_data = {"result": True}
         mock_request.return_value = MockResponse(mock_response_data)
 
-        result = self.client.delete_change_request_comment("org_123", "repo_456", "comment_biz_123")
+        result = self.client.delete_change_request_comment(
+            "org_123", "repo_456", 1, "comment_biz_123"
+        )
 
         mock_request.assert_called_once()
         call_kwargs = mock_request.call_args.kwargs
         self.assertEqual(call_kwargs["method"], "DELETE")
-        self.assertIn("/comments/comment_biz_123", call_kwargs["url"])
+        self.assertIn("/changeRequests/1/comments/comment_biz_123", call_kwargs["url"])
 
     @patch("requests.request")
     def test_update_change_request_comment(self, mock_request):
         """测试更新 MR 评论"""
-        mock_response_data = {"content": "Updated content"}
+        mock_response_data = {"result": True}
         mock_request.return_value = MockResponse(mock_response_data)
 
         result = self.client.update_change_request_comment(
-            "org_123", "repo_456", "comment_biz_123", "Updated content"
+            "org_123", "repo_456", 1, "comment_biz_123", "Updated content"
         )
 
         mock_request.assert_called_once()
         call_kwargs = mock_request.call_args.kwargs
         self.assertEqual(call_kwargs["method"], "PUT")
-        self.assertIn("/comments/comment_biz_123", call_kwargs["url"])
+        self.assertIn("/changeRequests/1/comments/comment_biz_123", call_kwargs["url"])
         data = call_kwargs["json"]
         self.assertEqual(data["content"], "Updated content")
 
