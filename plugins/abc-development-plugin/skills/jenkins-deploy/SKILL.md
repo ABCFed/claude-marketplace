@@ -28,7 +28,7 @@ export JENKINS_TOKEN="your_jenkins_api_token"
 source ~/.zshrc
 ```
 
-## Claude Code 中的使用流程
+## 使用流程
 
 ### 方式一：两阶段部署（推荐，进度可见）
 
@@ -52,8 +52,9 @@ python scripts/jenkins_deploy.py \
 }
 ```
 
-**步骤 2：启动后台监控（使用 Claude Code run_in_background=true）**
+**步骤 2：启动后台监控**
 
+**Claude Code（使用 run_in_background=true）：**
 ```bash
 # 在 Claude Code 中使用 Bash 工具，设置 run_in_background=true
 python scripts/jenkins_deploy.py \
@@ -63,11 +64,20 @@ python scripts/jenkins_deploy.py \
   --display-name PcFeatureTest
 ```
 
+**其他 AI 工具或终端（使用 nohup）：**
+```bash
+nohup python scripts/jenkins_deploy.py \
+  --monitor-only \
+  --full-name abc-his/test/PcFeatureTest \
+  --queue-id 161484 \
+  --display-name PcFeatureTest > /dev/null 2>&1 &
+```
+
 **重要说明：**
-- 监控任务作为**后台任务**运行，**不阻塞主对话**
-- 进度显示在 Claude Code 的后台任务输出中
+- 监控任务作为**后台任务**运行，**不阻塞主对话/终端**
+- Claude Code：进度显示在后台任务输出中
+- 其他工具：使用 `nohup` 实现后台运行，构建完成后会收到系统通知
 - 用户可以继续进行其他操作
-- 构建完成后会收到系统通知
 
 **监控输出示例：**
 ```
@@ -120,7 +130,9 @@ python scripts/jenkins_deploy.py \
 # 返回 JSON:
 # {"queue_id": 161484, "full_name": "abc-his/test/PcFeatureTest", ...}
 
-# 步骤 2: 启动后台监控（在 Claude Code 中使用 run_in_background=true）
+# 步骤 2: 启动后台监控
+# Claude Code: 直接运行（会使用 run_in_background=true）
+# 其他工具: 添加 nohup 和 & 放到后台
 python scripts/jenkins_deploy.py \
   --monitor-only \
   --full-name abc-his/test/PcFeatureTest \
@@ -182,11 +194,12 @@ python scripts/jenkins_deploy.py \
 
 **详细测试用例**：参见 [test-cases.md](references/test-cases.md)
 
-## 工作流程（Claude Code 推荐模式）
+## 工作流程（推荐模式）
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ 1. Claude 使用 AskUserQuestion 收集参数                     │
+│ 1. Claude Code: 使用 AskUserQuestion 收集参数               │
+│    其他 AI 工具: 通过对话收集参数                            │
 │    - 项目名称                                               │
 │    - Git 分支 / 标签                                         │
 │    - TAPD ID（从分支名自动解析）                             │
