@@ -1,6 +1,6 @@
 {
   "name": "abc-development-plugin",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Assist with ABC development flow",
   "author": {
     "name": "ABC Team",
@@ -13,10 +13,12 @@
     "codeup",
     "jenkins",
     "git-flow",
+    "modao",
     "agile",
     "ci-cd",
     "project-management",
     "api-documentation",
+    "prototype",
     "abc",
     "development"
   ]

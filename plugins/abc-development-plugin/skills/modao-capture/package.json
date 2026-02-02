@@ -1,0 +1,17 @@
+{
+  "name": "modao-capture",
+  "version": "2.0.0",
+  "description": "墨刀原型稿抓取工具。自动从墨刀原型稿链接抓取所有页面、截图和批注，生成 Markdown 文档。",
+  "main": "scripts/modao-capture.js",
+  "scripts": {
+    "start": "node scripts/modao-capture.js"
+  },
+  "dependencies": {
+    "commander": "^11.1.0",
+    "puppeteer": "^21.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

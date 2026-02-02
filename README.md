@@ -1,4 +1,4 @@
-# ABC Claude Code Plugin Marketplace
+≥# ABC Claude Code Plugin Marketplace
 
 中文 | [English](./README_EN.md)
 
@@ -6,17 +6,18 @@
 
 ## 快速开始
 
-### 通过 add-skill 安装（适用于所有 AI 代理）
+### 通过 skills CLI 安装（适用于所有 AI 代理）
 
-![add-skill 安装示例](docs/install_screenshot.png)
+![skills 安装示例](docs/install_screenshot.png)
 
 ```bash
 # 安装单个 skill
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/modao-capture
 ```
 
 **常用选项**：
@@ -33,13 +34,16 @@ npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-
 
 ```bash
 # 安装到用户目录
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --global
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --global
 
 # 指定 agent 安装
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --agent codex
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --agent codex
 
 # 跳过确认提示
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --yes
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --yes
+
+# 列出仓库中所有可用 skills
+npx skills add ABCFed/claude-marketplace --list
 ```
 
 ### 通过插件市场安装（仅 Claude Code）
@@ -63,7 +67,7 @@ TAPD 敏捷研发管理平台集成，通过 TAPD API 实现研发全流程管�
 
 **安装**：
 ```bash
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
 ```
 
 **准备**：
@@ -93,7 +97,7 @@ ABC 医疗云 API 文档查询工具，读取和查询 ABC API 的 OpenAPI 规�
 
 **安装**：
 ```bash
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox
 ```
 
 **准备**：
@@ -120,7 +124,7 @@ source ~/.zshrc
 
 **安装**：
 ```bash
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
 ```
 
 **准备**：
@@ -147,7 +151,7 @@ ABC Jenkins 项目发布技能，支持智能参数推断和交互式触发 Jenk
 
 **安装**：
 ```bash
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
 ```
 
 **准备**：
@@ -175,7 +179,7 @@ ABC Git Flow 工作流助手，帮助使用 abc-git-flow 工具管理 git 分支
 
 **安装**：
 ```bash
-npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
 ```
 
 **准备**：
@@ -197,6 +201,32 @@ pip install requests
 - RC 分支 - rc 分支管理（start/finish）
 - 灰度发布 - gray 分支发布到 master
 
+---
+
+### modao-capture
+
+墨刀原型稿抓取工具。自动从墨刀原型稿链接抓取所有页面、截图和批注，生成 Markdown 文档。
+
+**安装**：
+```bash
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/modao-capture
+```
+
+**准备**：
+```bash
+# 编辑 ~/.zshrc 或 ~/.bashrc
+export MODAO_CAPTURE_CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+source ~/.zshrc
+```
+
+**触发关键词**：墨刀、modao、原型稿、PRD、页面截图、批注
+
+**功能特性**：
+- 页面抓取 - 自动抓取原型稿所有页面
+- 截图生成 - 生成高清页面截图
+- 批注提取 - 提取页面批注内容
+- Markdown 导出 - 生成结构化文档
+
 ## 目录结构
 
 ```
@@ -207,7 +237,8 @@ pip install requests
 │   ├── git-flow/                 # Git Flow 工作流助手
 │   ├── tapd/                     # TAPD 集成（从 plugins 迁移）
 │   ├── apifox/                   # API 文档查询（从 plugins 迁移）
-│   └── codeup/                   # Codeup 仓库管理（从 plugins 迁移）
+│   ├── codeup/                   # Codeup 仓库管理（从 plugins 迁移）
+│   └── modao-capture/            # 墨刀原型稿抓取
 ├── plugins/
 │   └── abc-development-plugin/   # ABC 开发插件
 └── docs/                         # 文档
