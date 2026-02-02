@@ -15,6 +15,8 @@
 npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
 npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox
 npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
 ```
 
 **常用选项**：
@@ -137,11 +139,75 @@ source ~/.zshrc
 - MR 管理 - 创建合并请求、添加评论、列出 MR 和补丁集
 - 组织管理 - 查询组织、部门、成员、角色信息
 
+---
+
+### jenkins-deploy
+
+ABC Jenkins 项目发布技能，支持智能参数推断和交互式触发 Jenkins 构建。
+
+**安装**：
+```bash
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
+```
+
+**准备**：
+```bash
+# 编辑 ~/.zshrc 或 ~/.bashrc
+export JENKINS_USER="your_jenkins_username"
+export JENKINS_TOKEN="your_jenkins_api_token"
+source ~/.zshrc
+```
+
+**触发关键词**：Jenkins、发布、部署、构建、Deploy、Build、CI/CD
+
+**功能特性**：
+- 智能参数推断 - 自动解析分支名、标签、TAPD ID
+- 两阶段部署 - 触发构建后返回 JSON，支持后台监控
+- 实时状态监控 - 构建进度可视化，完成后发送通知
+- 项目过滤 - 根据 Git 仓库自动过滤相关项目
+- 缓存机制 - 项目列表缓存，提高响应速度
+
+---
+
+### git-flow
+
+ABC Git Flow 工作流助手，帮助使用 abc-git-flow 工具管理 git 分支。
+
+**安装**：
+```bash
+npx add-skill https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
+```
+
+**准备**：
+```bash
+# 安装 abc-git-flow
+sudo curl https://cis-static-common.oss-cn-shanghai.aliyuncs.com/assets/abc-git-flow/git-abc-flow-install.sh
+
+# 安装 Python 依赖
+pip install requests
+```
+
+**触发关键词**：拉分支、创建分支、git flow、分支管理、feature、hotfix、tag
+
+**功能特性**：
+- 需求开发 - feature 分支管理（start/finish）
+- 紧急修复 - hotfix（正式环境）/hotfix-g（灰度环境）管理
+- Tag 管理 - 非交互式创建 tag（f/t/v/g/p 类型）
+- MR 管理 - 非交互式创建 Merge Request
+- RC 分支 - rc 分支管理（start/finish）
+- 灰度发布 - gray 分支发布到 master
+
 ## 目录结构
 
 ```
 ├── .claude-plugin/
 │   └── marketplace.json          # 市场配置
+├── skills/                       # 独立技能
+│   ├── jenkins-deploy/           # Jenkins 发布技能
+│   ├── git-flow/                 # Git Flow 工作流助手
+│   ├── tapd/                     # TAPD 集成（从 plugins 迁移）
+│   ├── apifox/                   # API 文档查询（从 plugins 迁移）
+│   └── codeup/                   # Codeup 仓库管理（从 plugins 迁移）
 ├── plugins/
 │   └── abc-development-plugin/   # ABC 开发插件
 └── docs/                         # 文档
