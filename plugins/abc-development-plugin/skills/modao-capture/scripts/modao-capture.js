@@ -253,7 +253,10 @@ function sanitizeFolderName(name) {
  * 生成安全的文件名
  */
 function sanitizeFilename(filename) {
-  return filename.replace(/[\/\\?%*:|"<>]/g, '_').trim();
+  return filename
+    .replace(/[\/\\?%*:|"<>]/g, '_')
+    .replace(/\s+/g, '_')
+    .trim();
 }
 
 /**
