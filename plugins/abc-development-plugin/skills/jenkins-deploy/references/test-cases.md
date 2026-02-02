@@ -95,13 +95,13 @@
 
 ```bash
 # 1. 验证参数
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   PcFeatureTest \
   --validate \
   --params '{"repoTag":"pc-t2025.53.19","featureNo":"70"}'
 
 # 2. 模拟运行
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   PcFeatureTest \
   --dry-run \
   --params '{"repoTag":"pc-t2025.53.19","featureNo":"70"}'
@@ -111,14 +111,14 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 ```bash
 # 1. 触发构建
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   PcFeatureTest \
   --trigger-only-no-monitor \
   --yes \
   --params '{"repoTag":"pc-t2025.53.19","featureNo":"70"}'
 
 # 2. 启动监控（使用返回的 queue_id）
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   --monitor-only \
   --full-name abc-his/test/PcFeatureTest \
   --queue-id <queue_id> \

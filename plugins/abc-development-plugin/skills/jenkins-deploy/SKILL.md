@@ -35,7 +35,7 @@ source ~/.zshrc
 **步骤 1：触发构建（返回 JSON）**
 
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   <project_name> \
   --trigger-only-no-monitor \
   --yes \
@@ -56,7 +56,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 ```bash
 # 在 Claude Code 中使用 Bash 工具，设置 run_in_background=true
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   --monitor-only \
   --full-name abc-his/test/PcFeatureTest \
   --queue-id 161484 \
@@ -111,7 +111,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 ```bash
 # 步骤 1: 触发构建
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   PcFeatureTest \
   --trigger-only-no-monitor \
   --yes \
@@ -121,7 +121,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 # {"queue_id": 161484, "full_name": "abc-his/test/PcFeatureTest", ...}
 
 # 步骤 2: 启动后台监控（在 Claude Code 中使用 run_in_background=true）
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   --monitor-only \
   --full-name abc-his/test/PcFeatureTest \
   --queue-id 161484 \
@@ -131,7 +131,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 ### 开发环境发布
 
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   staticPcOwn \
   --trigger-only-no-monitor \
   --yes \
@@ -142,13 +142,13 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 ```bash
 # 列出所有项目
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py --list --all
+python scripts/jenkins_deploy.py --list --all
 
 # 列出当前仓库相关的项目（自动过滤）
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py --list
+python scripts/jenkins_deploy.py --list
 
 # 停止指定构建号
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py --stop <build_number>
+python scripts/jenkins_deploy.py --stop <build_number>
 ```
 
 ## 测试与验证
@@ -159,14 +159,14 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py --stop <build_
 
 ```bash
 # 自动化运行所有测试用例
-python3 ~/.claude/skills/jenkins-deploy/scripts/run_tests.py
+python scripts/run_tests.py
 ```
 
 ### 手动测试
 
 **1. 参数验证（必做）**
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   PcFeatureTest \
   --validate \
   --params '{"repoTag":"pc-t2025.53.19","featureNo":"70"}'
@@ -174,7 +174,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 **2. 模拟运行（必做）**
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   PcFeatureTest \
   --dry-run \
   --params '{"repoTag":"pc-t2025.53.19","featureNo":"70"}'
@@ -260,7 +260,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 **示例**：
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   PcFeatureTest \
   --trigger-only \
   --params '{"repoTag":"pc-f2026.05.48","tapdId":"1167459320001118371","featureNo":"1122044681001112866"}'
@@ -277,7 +277,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 **示例**：
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py staticPcOwn
+python scripts/jenkins_deploy.py staticPcOwn
 ```
 
 ### 3. static-mf-deepseek (微服务发布)
@@ -291,12 +291,12 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py staticPcOwn
 
 **示例**：
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py static-mf-deepseek
+python scripts/jenkins_deploy.py static-mf-deepseek
 ```
 
 ## 缓存机制
 
-**缓存位置：** `~/.claude/skills/jenkins-deploy/cache/jobs.json`
+**缓存位置：** `scripts/cache/jobs.json`
 
 **缓存策略：**
 - 首次运行：从 Jenkins API 获取 542 个项目并缓存
@@ -305,7 +305,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py static-mf-deep
 
 **手动清除缓存：**
 ```bash
-rm ~/.claude/skills/jenkins-deploy/cache/jobs.json
+rm scripts/cache/jobs.json
 ```
 
 ## 支持的 Jenkins 环境

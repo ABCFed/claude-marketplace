@@ -32,7 +32,7 @@
 
 **发布示例**：
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   PcFeatureTest \
   --trigger-only-no-monitor \
   --yes \
@@ -56,7 +56,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 **发布示例**：
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   socialPcModuleFeatureTest \
   --trigger-only-no-monitor \
   --yes \
@@ -78,7 +78,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 **发布示例**：
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   staticPrintFeatureTest \
   --trigger-only-no-monitor \
   --yes \
@@ -99,7 +99,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 **发布示例**：
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   static-mf-deepseek \
   --trigger-only-no-monitor \
   --yes \
@@ -126,7 +126,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 **发布示例**：
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   staticPcOwn \
   --trigger-only-no-monitor \
   --yes \
@@ -149,7 +149,7 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 **发布示例**：
 ```bash
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   static-mf-order-cloud \
   --trigger-only-no-monitor \
   --yes \
@@ -164,13 +164,13 @@ python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
 
 ```bash
 # 验证模式查看参数
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   <项目名称> \
   --validate \
   --params '{}'
 
 # 模拟运行查看参数详情
-python3 ~/.claude/skills/jenkins-deploy/scripts/jenkins_deploy.py \
+python scripts/jenkins_deploy.py \
   <项目名称> \
   --dry-run \
   --params '{}'
