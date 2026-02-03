@@ -12,7 +12,7 @@
     {
       "name": "abc-development-plugin",
       "description": "ABC 敏捷研发管理平台集成插件，包含 TAPD、Apifox、Codeup、Jenkins Deploy、Git Flow、墨刀抓取六个 skill",
-      "version": "0.10.0",
+      "version": "0.11.0",
       "author": {
         "name": "ABC Team",
         "email": "bubble@abcyun.cn"
