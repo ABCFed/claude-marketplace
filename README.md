@@ -18,6 +18,8 @@ npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/cod
 npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
 npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
 npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/modao-capture
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/sls-trace-analyzer
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-bug-analyzer
 ```
 
 **常用选项**：
@@ -227,6 +229,73 @@ source ~/.zshrc
 - 批注提取 - 提取页面批注内容
 - Markdown 导出 - 生成结构化文档
 
+---
+
+### sls-trace-analyzer
+
+SLS 日志追踪分析工具，根据 traceId 或 URL 查询阿里云日志服务 (SLS)，自动分析日志内容并定位代码问题。
+
+**安装**：
+```bash
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/sls-trace-analyzer
+```
+
+**准备**：
+```bash
+# 方式一：配置 credentials 文件（安装时自动创建）
+# 编辑 ~/.claude/skills/sls-trace-analyzer/credentials.json
+{
+  "sls_access_key_id": "your_access_key_id",
+  "sls_access_key_secret": "your_access_key_secret"
+}
+
+# 方式二：使用环境变量
+export SLS_ACCESS_KEY_ID="your_access_key_id"
+export SLS_ACCESS_KEY_SECRET="your_access_key_secret"
+```
+
+> **注意**: skill 目录下已内置 `.venv` Python 虚拟环境（含 `requests` 等依赖），无需额外安装 Python 包。
+
+**触发关键词**：traceId、SLS、日志查询、日志分析、链路追踪
+
+**功能特性**：
+- TraceId 查询 - 根据 traceId 查询完整调用链日志
+- URL 模式 - 从请求 URL 自动解析环境、地域、时间戳，查询网关日志获取 traceId
+- 多 Region 支持 - 上海/杭州双 Region，自动跨 Region 追踪
+- 双 LogStore 查询 - 同时查询普通存储和长期存储，获取完整日志
+- 根因分析 - 自动识别异常堆栈，结合代码定位问题根因
+- 分析报告 - 生成结构化的日志分析报告，包含调用链路和修复建议
+
+---
+
+### tapd-bug-analyzer
+
+TAPD Bug 单自动分析工具，从 Bug 链接出发，自动获取 Bug 详情并选择最优分析策略定位问题。
+
+**安装**：
+```bash
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-bug-analyzer
+```
+
+**准备**：
+```bash
+# 需要 TAPD MCP Server 和 SLS 凭证（用于日志分析）
+# 1. 确保 TAPD MCP Server 已配置
+# 2. 确保 sls-trace-analyzer 已安装并配置凭证
+```
+
+**触发关键词**：TAPD Bug、Bug 分析、缺陷分析、Bug 定位
+
+**功能特性**：
+- Bug 详情获取 - 通过 TAPD MCP 自动获取 Bug 单详细信息
+- 智能策略选择 - 根据 Bug 描述内容自动选择最优分析策略：
+  - 策略 A：检测到 traceId，直接查询 SLS 日志分析
+  - 策略 B：检测到请求 URL（含时间戳），通过网关日志反查 traceId
+  - 策略 C：纯文字描述，基于关键词搜索代码定位问题
+- 日志联动 - 与 sls-trace-analyzer 联动，自动完成日志查询和分析
+- 代码定位 - 从异常堆栈或业务描述定位到具体代码位置
+- 分析报告 - 生成包含 Bug 信息、调用链路、根因分析和修复建议的完整报告
+
 ## 目录结构
 
 ```
@@ -238,7 +307,9 @@ source ~/.zshrc
 │   ├── tapd/                     # TAPD 集成（从 plugins 迁移）
 │   ├── apifox/                   # API 文档查询（从 plugins 迁移）
 │   ├── codeup/                   # Codeup 仓库管理（从 plugins 迁移）
-│   └── modao-capture/            # 墨刀原型稿抓取
+│   ├── modao-capture/            # 墨刀原型稿抓取
+│   ├── sls-trace-analyzer/       # SLS 日志追踪分析
+│   └── tapd-bug-analyzer/        # TAPD Bug 单自动分析
 ├── plugins/
 │   └── abc-development-plugin/   # ABC 开发插件
 └── docs/                         # 文档
