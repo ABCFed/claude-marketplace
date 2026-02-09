@@ -36,6 +36,23 @@
 
 ## Configuration
 
+### Python 运行环境
+
+skill 目录下已内置 `.venv` Python 虚拟环境（含 `requests` 等依赖），**无需额外安装**。
+
+调用 `sls-query.py` 时，**必须**使用内置的 `.venv/bin/python`：
+
+```bash
+# SKILL_DIR 为 skill.md 所在目录（即 sls-query.py 同级目录）
+SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"  # 仅示意，实际使用下方绝对路径
+
+# 正确调用方式
+~/.claude/skills/sls-trace-analyzer/.venv/bin/python \
+  ~/.claude/skills/sls-trace-analyzer/sls-query.py [参数]
+```
+
+> **注意**: 不要使用系统 `python3` 或其他环境的 Python，否则可能缺少 `requests` 等依赖。
+
 ### 上海 Region (默认)
 - Endpoint: `cn-shanghai.log.aliyuncs.com`
 - Project: `abc-cis-log`
