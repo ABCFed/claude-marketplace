@@ -11,6 +11,8 @@ Thumbs.db
 *.swo
 *~
 *credentials.json
+*__pycache__*
+
 # IDE
 .vscode/
 .idea/
