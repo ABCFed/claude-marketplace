@@ -36,27 +36,14 @@
 
 ## Configuration
 
-### Python 运行环境（自动初始化）
+### Python 运行环境（按需自动初始化）
 
-调用 `sls-query.py` 前，**必须**确保 `.venv` 已就绪。每次调用前执行以下初始化命令（已存在时会秒过，无副作用）：
+`sls-query.py`、`requirements.txt`、`.venv/` 均位于**本 SKILL.md 同级目录**。
 
-```bash
-SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
-# 也可直接使用绝对路径：
-# SKILL_DIR=~/.claude/skills/sls-trace-analyzer
-
-# 自动创建 venv 并安装依赖（已存在则跳过）
-if [ ! -f "$SKILL_DIR/.venv/bin/
-" ]; then
-  python3 -m venv "$SKILL_DIR/.venv"
-  "$SKILL_DIR/.venv/bin/pip" install -q -r "$SKILL_DIR/requirements.txt"
-fi
-
-# 调用脚本
-"$SKILL_DIR/.venv/bin/python" "$SKILL_DIR/sls-query.py" [参数]
-```
-
-> **注意**: 不要使用系统 `python3` 直接运行 `sls-query.py`，否则可能缺少 `requests` 等依赖。
+**调用规则**：
+1. 直接用同目录下的 `.venv/bin/python` 执行 `sls-query.py`，无需前置检查
+2. 仅当执行失败（`No such file or directory`、`ModuleNotFoundError`）时，在同目录下执行 `python3 -m venv .venv && .venv/bin/pip install -q -r requirements.txt` 初始化后重试
+3. 不要使用系统 `python3` 直接运行 `sls-query.py`，否则缺少依赖
 
 ### 上海 Region (默认)
 - Endpoint: `cn-shanghai.log.aliyuncs.com`
@@ -133,8 +120,7 @@ config = DOMAIN_MAPPING.get(domain, {"env": "prod", "region": "shanghai"})
 使用时间戳和 path 查询 gateway 日志，提取 `X-B3-TraceId`：
 
 ```bash
-~/.claude/skills/sls-trace-analyzer/.venv/bin/python \
-  ~/.claude/skills/sls-trace-analyzer/sls-query.py \
+.venv/bin/python sls-query.py \
   --mode access-log \
   --timestamp "<timestamp>" \
   --path "<path>" \
@@ -188,8 +174,7 @@ to_time = to_date or now
 使用 Python 脚本查询日志：
 
 ```bash
-~/.claude/skills/sls-trace-analyzer/.venv/bin/python \
-  ~/.claude/skills/sls-trace-analyzer/sls-query.py \
+.venv/bin/python sls-query.py \
   --trace-id "<traceId>" \
   --region "<region>" \
   --env "<env>" \
@@ -223,8 +208,7 @@ to_time = to_date or now
 
 满足上述条件时，立即执行杭州查询（无需询问用户）：
 ```bash
-~/.claude/skills/sls-trace-analyzer/.venv/bin/python \
-  ~/.claude/skills/sls-trace-analyzer/sls-query.py \
+.venv/bin/python sls-query.py \
   --trace-id "<traceId>" \
   --region "hangzhou" \
   --env "<env>"
