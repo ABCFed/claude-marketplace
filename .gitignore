@@ -21,6 +21,7 @@ Thumbs.db
 # Dependencies
 node_modules/
 vendor/
+.venv/
 .pnp/
 .pnp.js
 
