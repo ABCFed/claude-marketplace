@@ -43,19 +43,24 @@ DOMAIN_MAPPING = {
     "region2.abcyun.cn": {"env": "prod", "region": "hangzhou"},
 }
 
-CREDENTIALS_PATH = os.path.expanduser("./credentials.json")
+CREDENTIALS_PATHS = [
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "credentials.json"),
+    os.path.expanduser("~/.cc-switch/skills/sls-trace-analyzer/credentials.json"),
+    os.path.expanduser("~/.config/sls-query/credentials.json"),
+]
 
 
 def load_credentials():
     """Load SLS credentials from config file or environment variables."""
-    # Try config file first
-    if os.path.exists(CREDENTIALS_PATH):
-        with open(CREDENTIALS_PATH, "r") as f:
-            creds = json.load(f)
-        ak_id = creds.get("sls_access_key_id")
-        ak_secret = creds.get("sls_access_key_secret")
-        if ak_id and ak_secret:
-            return ak_id, ak_secret
+    # Try config files first (multiple candidate paths)
+    for cred_path in CREDENTIALS_PATHS:
+        if os.path.exists(cred_path):
+            with open(cred_path, "r") as f:
+                creds = json.load(f)
+            ak_id = creds.get("sls_access_key_id")
+            ak_secret = creds.get("sls_access_key_secret")
+            if ak_id and ak_secret:
+                return ak_id, ak_secret
 
     # Fall back to environment variables
     ak_id = os.environ.get("SLS_ACCESS_KEY_ID")
