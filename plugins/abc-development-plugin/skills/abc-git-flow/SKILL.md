@@ -1,11 +1,40 @@
 ---
 name: abc-git-flow
-description: ABC 后台 Git 分支管理工作流辅助。用于执行 git abc 命令进行分支操作、提供开发流程指导。当用户提到"开新分支"、"feature"、"hotfix"、"发布"、"提测"、"合并"、"灰度"、"全量"、"rc"、"tag" 等关键词时使用此技能。
+description: ABC 后台 Git 分支管理工作流辅助。用于执行 git abc 命令进行分支操作、提供开发流程指导。当用户提到"开新分支"、"feature"、"hotfix"、"发布"、"提测"、"合并"、"灰度"、"全量"、"rc"、"tag"、"MR"、"merge request" 等关键词时使用此技能。
 ---
 
 # ABC GIT FLOW 分支管理
 
-ABC 定制化的 Git 工作流，基于 git-flow 扩展，支持 灰度发布 流程。
+ABC 定制化的 Git 工作流，基于 git-flow 扩展，支持灰度发布流程。
+
+## 安装 abc-git-flow
+
+### macOS
+```bash
+sudo curl https://cis-static-common.oss-cn-shanghai.aliyuncs.com/assets/abc-git-flow/git-abc-flow-install.sh | sh
+```
+如果报错 `Bad CPU type`，需要执行：
+```bash
+/usr/sbin/softwareupdate --install-rosetta --agree-to-license
+```
+
+### Windows
+```cmd
+curl -# -O https://static-common-cdn.abcyun.cn/assets/abc-git-flow/install.bat && call install.bat
+```
+
+### Linux
+```bash
+curl https://static-common-cdn.abcyun.cn/assets/abc-git-flow/install-linux.sh | sh
+```
+
+## 初始化
+
+首次使用需要在工程目录下执行：
+```bash
+git abc init
+git abc tag config <前缀>  # 配置 tag 前缀，如 pc、charge
+```
 
 ## 分支结构
 
@@ -17,6 +46,7 @@ ABC 定制化的 Git 工作流，基于 git-flow 扩展，支持 灰度发布 �
 | `gray` | 灰度环境代码 | 灰度环境 |
 | `rc` | 预发布测试 | 预发布环境 |
 | `develop` | 开发基础分支 | 测试环境 |
+| `experience` | 体验分支，不保证稳定性 | 体验环境 |
 
 ### 临时分支
 
@@ -26,13 +56,11 @@ ABC 定制化的 Git 工作流，基于 git-flow 扩展，支持 灰度发布 �
 | `hotfix/*` | master | 正式环境紧急修复 |
 | `hotfix-g/*` | gray | 灰度环境紧急修复 |
 
-## 场景判断指南
+> **分支命名规范**：参见 [分支命名规则](references/branch-naming.md)
 
-根据用户描述判断场景，并提供对应指导：
+## 典型工作流程
 
-### 场景1: 新需求开发
-
-**触发关键词**: 开新分支、新功能、feature、需求开发、迭代
+### 新需求开发
 
 **流程**:
 ```bash
@@ -54,9 +82,7 @@ git abc feature finish <name>
 - 多人协作同一 feature 时禁用 rebase，改用 merge
 - finish 后记得 push develop 分支
 
-### 场景2: 正式环境 Bug 修复
-
-**触发关键词**: 线上bug、正式环境问题、hotfix、紧急修复、生产问题
+### 正式环境 Bug 修复
 
 **流程**:
 ```bash
@@ -79,9 +105,7 @@ git push origin --delete hotfix/<name>
 
 **关键提醒**: hotfix finish 会自动合入 master、gray、rc、develop 四个分支，务必全部 push！
 
-### 场景3: 灰度环境 Bug 修复
-
-**触发关键词**: 灰度问题、灰度bug、hotfix-g、gray环境问题
+### 灰度环境 Bug 修复
 
 **流程**:
 ```bash
@@ -104,9 +128,7 @@ git push origin --delete hotfix-g/<name>
 
 **关键提醒**: hotfix-g finish 会合入 gray、rc、develop 三个分支（不包含 master）
 
-### 场景4: 发布流程
-
-**触发关键词**: 发布、上线、发灰度、发全量、提测、集成测试
+### 发布流程
 
 **集成测试 (t-tag)**:
 ```bash
@@ -161,6 +183,8 @@ git abc tag create   # 选择 "正式环境(v)"
 | `xxx-g` | 灰度发布 | pc-g2021.09.01 |
 | `xxx-v` | 正式发布 | pc-v2021.09.01 |
 
+> **详细说明**：参见 [Tag 创建详细指南](references/tag-create.md)，包含 tag 类型、分支约束、上车/提测信息等完整说明。
+
 ## Rebase 使用原则
 
 **推荐使用 rebase 的场景**:
@@ -170,6 +194,95 @@ git abc tag create   # 选择 "正式环境(v)"
 
 **禁止使用 rebase 的场景**:
 - 多人协作的分支（会导致历史混乱）
+
+## Merge Request 管理
+
+```bash
+# 创建 MR（交互式选择目标分支和评审者）
+git abc mr create
+
+# 配置云效 Token
+git abc mr config
+```
+
+## 非交互式脚本
+
+`git abc` 部分命令（如 tag create、mr create）需要交互式输入，在自动化场景（CI/CD、脚本批处理、IDE 集成等）中不方便使用。提供了 Python 脚本作为非交互式替代方案。
+
+**安装依赖：**
+```bash
+pip install requests
+```
+
+### Tag 创建脚本 (`scripts/tag_create.py`)
+
+```bash
+# 创建正式环境 tag
+scripts/tag_create.py v --deps "abc-auth" --operation "无"
+
+# 创建需求提测 tag
+scripts/tag_create.py f \
+  --deps "无" \
+  --operation "无" \
+  --remark "feat: 实现新功能" \
+  --tapd-id "1122044681001112866"
+
+# 创建灰度环境 tag
+scripts/tag_create.py g --deps "abc-auth" --operation "无"
+
+# 仅创建 tag，跳过上车/提测
+scripts/tag_create.py v --skipdeploy
+```
+
+**参数说明：**
+
+| 参数 | 说明 | 必填 |
+|-----|------|-----|
+| `tag_type` | Tag 类型 (f/t/v/g/p) | 是 |
+| `--deps` | 依赖的服务 | 上车/提测时必填 |
+| `--operation` | 需要的操作 | 上车/提测时必填 |
+| `--remark` | 备注/说明 | 提测时必填 |
+| `--tapd-id` | 关联的 TAPD ID | 否 (f tag 可选) |
+| `-b, --business` | 业务线 (默认 abc-his) | 否 |
+| `--prefix` | Tag 前缀 (默认从 git config 读取) | 否 |
+| `--hotfix` | Hotfix 模式 | 否 |
+| `--skipdeploy` | 跳过上车/提测，仅创建 tag | 否 |
+
+### MR 创建脚本 (`scripts/mr_create.py`)
+
+```bash
+# 创建 MR
+scripts/mr_create.py \
+  -t develop \
+  -T "feat: 新功能开发" \
+  -r 张三 李四
+
+# 指定描述
+scripts/mr_create.py \
+  -t develop \
+  -T "fix: 修复bug" \
+  -r 张三 \
+  -d "修复了xxx问题"
+
+# 跳过企业微信通知
+scripts/mr_create.py \
+  -t develop \
+  -T "feat: xxx" \
+  -r 张三 \
+  --skip-notify
+```
+
+**参数说明：**
+
+| 参数 | 说明 | 必填 |
+|-----|------|-----|
+| `-t, --target` | 目标分支 | 是 |
+| `-T, --title` | MR 标题 | 是 |
+| `-r, --reviewers` | 评审者姓名（多个用空格分隔） | 是 |
+| `-d, --description` | MR 描述 | 否 |
+| `--skip-notify` | 跳过企业微信通知 | 否 |
+
+> **前置条件**：MR 创建需要先配置云效 Token，运行 `git abc mr config` 或手动创建 `~/.abc-fed-config/mr.json`。
 
 ## 命令速查
 
@@ -198,12 +311,32 @@ git abc gray publish             # gray → master
 
 # Tag 管理
 git abc tag create               # 交互式创建 tag
-git abc tag show                 # 查看最近 tag
-git abc tag config               # 配置 tag 前缀
+git abc tag create <类型>        # 直接指定 tag 类型 (v/g/p/f/t)
+git abc tag show [类型]          # 查看最近 tag
+git abc tag config [前缀]        # 配置 tag 前缀
 
-# 更新工具
-git abc update
+# MR 管理
+git abc mr create                # 创建 Merge Request
+git abc mr config                # 配置云效 Token
+
+# 其他
+git abc -v                       # 查看版本
+git abc -h                       # 查看帮助
+git abc update                   # 更新工具
 ```
+
+## 命令支持情况对照
+
+| 操作 | 交互式命令 | 非交互式脚本 | 推荐方式 |
+|-----|-----------|------------|---------|
+| Feature 操作 | `git abc feature start/finish` | - | 交互式 |
+| Hotfix 操作 | `git abc hotfix start/finish` | - | 交互式 |
+| RC 操作 | `git abc rc start/finish` | - | 交互式 |
+| Tag 配置 | `git abc tag config <前缀>` | - | 交互式 |
+| Tag 创建 | `git abc tag create [类型]` | `tag_create.py [类型] --deps xxx` | 自动化场景用非交互式 |
+| MR 创建 | `git abc mr create` | `mr_create.py -t xxx -T xxx -r xxx` | 自动化场景用非交互式 |
+
+> **提示**：在非交互式终端环境（CI/CD、脚本批处理、IDE 集成等）中，优先使用非交互式脚本创建 Tag 和 MR，避免终端阻塞。
 
 ## 操作指导原则
 
