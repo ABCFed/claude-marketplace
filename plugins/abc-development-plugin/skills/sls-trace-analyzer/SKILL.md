@@ -142,7 +142,7 @@ config = DOMAIN_MAPPING.get(domain, {"env": "prod", "region": "shanghai"})
 - **`abc-invoke-gateway-service`**: 跨 region 调用网关入口，用于判断是否需要跨 region 查询
 
 **【查询技巧】**
-1. 时间范围：默认查询时间戳前后 **30 秒**（不是 5 秒，太窄容易漏掉）
+1. 时间范围：默认查询时间戳前后 **10 分钟**（不是 30 秒，太窄容易漏掉）
 2. 路径匹配：使用路径的**关键词**而非完整路径，例如用 `registration` 而非 `/api-weapp/pe/registration`
 3. 如果 access-log 模式查不到，可以直接用 gateway topic 查询：
    ```bash
