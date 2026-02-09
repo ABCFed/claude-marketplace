@@ -45,6 +45,7 @@ DOMAIN_MAPPING = {
 
 CREDENTIALS_PATHS = [
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "credentials.json"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "credentials.json"),
     os.path.expanduser("~/.cc-switch/skills/sls-trace-analyzer/credentials.json"),
     os.path.expanduser("~/.config/sls-query/credentials.json"),
 ]
