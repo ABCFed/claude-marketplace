@@ -10,7 +10,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
-
+*credentials.json
 # IDE
 .vscode/
 .idea/
