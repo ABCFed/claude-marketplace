@@ -152,20 +152,24 @@ def sign(method, resource, params, headers, access_key_secret):
     return signature
 
 
-def parse_datetime(date_str):
-    """解析日期字符串为时间戳"""
+def parse_datetime(date_str, is_end=False):
+    """解析日期字符串为时间戳。
+    当 is_end=True 且输入为纯日期格式时，自动补到当天 23:59:59。
+    """
     if not date_str:
         return None
 
     formats = [
-        '%Y-%m-%d %H:%M:%S',
-        '%Y-%m-%d %H:%M',
-        '%Y-%m-%d',
+        ('%Y-%m-%d %H:%M:%S', False),
+        ('%Y-%m-%d %H:%M', False),
+        ('%Y-%m-%d', True),
     ]
 
-    for fmt in formats:
+    for fmt, is_date_only in formats:
         try:
             dt = datetime.strptime(date_str, fmt)
+            if is_end and is_date_only:
+                dt = dt.replace(hour=23, minute=59, second=59)
             return int(dt.timestamp())
         except ValueError:
             continue
@@ -421,7 +425,7 @@ def main():
         start_time = int((now - timedelta(days=4)).timestamp())
 
     if args.to_time:
-        end_time = parse_datetime(args.to_time)
+        end_time = parse_datetime(args.to_time, is_end=True)
     else:
         end_time = int(now.timestamp())
 
