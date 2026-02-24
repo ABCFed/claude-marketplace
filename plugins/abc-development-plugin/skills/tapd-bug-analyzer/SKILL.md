@@ -1,3 +1,8 @@
+---
+name: tapd-bug-analyzer
+description: 自动化分析和定位 TAPD Bug 单中的问题，支持多种分析策略。
+---
+
 # TAPD Bug Analyzer Skill
 
 自动化分析和定位 TAPD Bug 单中的问题，支持多种分析策略。

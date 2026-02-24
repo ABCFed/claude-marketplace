@@ -213,7 +213,7 @@ def get_logs(endpoint, project, logstore, trace_id, start_time, end_time, access
     url = f'https://{project}.{endpoint}{resource}'
 
     try:
-        response = requests.get(url, params=params, headers=headers, timeout=60)
+        response = requests.get(url, params=params, headers=headers, timeout=(10, 60))
 
         if response.status_code == 200:
             return {
@@ -276,7 +276,7 @@ def get_access_logs(endpoint, project, logstore, path, timestamp_ms, access_key_
     url = f'https://{project}.{endpoint}{resource}'
 
     try:
-        response = requests.get(url, params=params, headers=headers, timeout=60)
+        response = requests.get(url, params=params, headers=headers, timeout=(10, 60))
         if response.status_code == 200:
             return {
                 'success': True,
