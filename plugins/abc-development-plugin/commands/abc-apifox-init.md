@@ -4,7 +4,7 @@ description: 初始化 abc-apifox（安装依赖并下载缓存）
 
 ## Context
 
-- Skill 安装路径: !`find ~ -type d -name "abc-apifox" -path "*/skills/*" 2>/dev/null | head -1`
+- Skill 安装路径: skills/abc-apifox
 
 ## Your task
 
@@ -17,13 +17,12 @@ description: 初始化 abc-apifox（安装依赖并下载缓存）
 
 2. **运行环境检查**（验证配置）：
    ```bash
-   SKILL_PATH=$(find ~ -type d -name "abc-apifox" -path "*/skills/*" 2>/dev/null | head -1)
-   python "$SKILL_PATH/scripts/check_env.py"
+   python skills/abc-apifox/scripts/check_env.py
    ```
 
 3. **初始化缓存**（从 Apifox 下载最新文档）：
    ```bash
-   python "$SKILL_PATH/scripts/apifox.py" refresh_oas
+   python skills/abc-apifox/scripts/apifox.py refresh_oas
    ```
 
 执行完成后，报告初始化结果（成功/失败、接口数量、模块数量等）。
