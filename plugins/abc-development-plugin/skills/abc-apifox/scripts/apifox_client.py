@@ -60,7 +60,7 @@ class ApifoxClient:
             "exportFormat": "JSON"
         }
 
-        response = self.session.request("POST", url, params=params, json=body, timeout=30)
+        response = self.session.request("POST", url, params=params, json=body, timeout=120)
         response.raise_for_status()
         data = response.json()
 

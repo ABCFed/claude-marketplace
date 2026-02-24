@@ -74,7 +74,7 @@ if token:
         }
 
         print(f"   请求 URL: {url}")
-        response = requests.post(url, params=params, json=body, headers=headers, timeout=30)
+        response = requests.post(url, params=params, json=body, headers=headers, timeout=120)
         print(f"   状态码: {response.status_code}")
 
         if response.status_code == 200:

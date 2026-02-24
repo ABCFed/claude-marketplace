@@ -11,8 +11,6 @@ description: ABC 医疗云 API 文档查询工具。读取和查询 ABC API 的 
 
 ### 必需的环境变量
 
-使用前需要配置 Apifox Access Token：
-
 ```bash
 # 设置 Apifox Access Token（必需）
 export APIFOX_ACCESS_TOKEN="你的 Apifox Access Token"
@@ -21,35 +19,56 @@ export APIFOX_ACCESS_TOKEN="你的 Apifox Access Token"
 export APIFOX_PROJECT_ID="4105462"
 ```
 
-### 获取 Apifox Access Token
-
-1. 登录 [Apifox](https://apifox.com)
-2. 进入账号设置 > API 访问令牌
-3. 创建新的访问令牌
-4. 复制 Token 并配置到环境变量
+获取 Token：登录 [Apifox](https://apifox.com) > 账号设置 > API 访问令牌
 
 ### 依赖安装
 
 ```bash
-# 安装 Python 依赖
 pip3 install requests
 ```
+
+### 首次使用：初始化缓存
+
+**首次使用前需要初始化缓存**，只需执行一次：
+
+```bash
+# 获取 skill 安装路径
+SKILL_PATH=$(find ~ -type d -name "abc-apifox" -path "*/skills/*" 2>/dev/null | head -1)
+
+# 1. 运行环境检查（验证配置）
+python "$SKILL_PATH/scripts/check_env.py"
+
+# 2. 初始化缓存
+python "$SKILL_PATH/scripts/apifox.py" refresh_oas
+```
+
+缓存初始化后，后续查询直接从本地读取，无需重复初始化。
 
 ### 工作原理
 
 **缓存架构**：按模块拆分的缓存结构
 
-1. **首次使用**：从 Apifox API 获取 OpenAPI 文档
-2. **智能拆分**：
-   - 接口按模块拆分（api.stocks、rpc.advice 等）
-   - Schema 按首字母分组（A-Z + 非字母）
-3. **按需加载**：查询时只加载相关模块文件
-4. **缓存持久**：缓存永久有效，需要手动刷新获取最新文档
+1. **智能拆分**：接口按模块拆分，Schema 按首字母分组
+2. **按需加载**：查询时只加载相关模块文件
+3. **缓存持久**：缓存永久有效，需要手动刷新获取最新文档
+4. **自动保护**：查询时内部自动检查缓存状态
 
 ## 使用方式
 
+**重要**：执行脚本时需要先获取当前 skill 的安装路径。
+
 ```bash
-./scripts/apifox <command> [参数]
+# 获取 skill 安装路径
+SKILL_PATH=$(find ~ -type d -name "abc-apifox" -path "*/skills/*" 2>/dev/null | head -1)
+
+# 执行命令
+python "$SKILL_PATH/scripts/apifox.py" <command> [参数]
+```
+
+如果 `python` 命令不可用，使用 `python3`：
+
+```bash
+python3 "$SKILL_PATH/scripts/apifox.py" <command> [参数]
 ```
 
 所有命令默认返回 JSON 格式输出。
@@ -74,18 +93,46 @@ pip3 install requests
 | `status` | 查看缓存状态 |
 | `clear_cache` | 清除本地缓存（需要 `--force`） |
 
+## 查询注意事项
+
+### 1. 查询前先搜索
+
+**获取接口详情前，必须先用 `search_paths` 确认接口存在**：
+
+```bash
+# 错误做法：直接查询可能不存在的接口
+python "$SKILL_PATH/scripts/apifox.py" get_path --path "/rpc/xxx/yyy" --method POST
+
+# 正确做法：先搜索确认存在
+python "$SKILL_PATH/scripts/apifox.py" search_paths --keyword "xxx"
+# 然后根据搜索结果获取详情
+python "$SKILL_PATH/scripts/apifox.py" get_path --path "/rpc/xxx/yyy" --method GET
+```
+
+### 2. HTTP 方法判断
+
+根据路径特征判断 HTTP 方法：
+
+| 路径特征 | 常见方法 | 示例 |
+|---------|---------|------|
+| `/page`、`/list`、`/query` | GET | 分页查询、列表查询 |
+| `/create`、`/add` | POST | 创建资源 |
+| `/update`、`/modify` | PUT/POST | 更新资源 |
+| `/delete`、`/remove` | DELETE | 删除资源 |
+| `/xxx/{id}` | GET | 获取单个资源 |
+
 ## 使用示例
 
 ### 获取接口详情
 
 ```bash
 # 获取接口详情（自动推断模块）
-./scripts/apifox get_path \
+python "$SKILL_PATH/scripts/apifox.py" get_path \
     --path "/api/v3/goods/stocks/check/orders" \
     --method POST
 
 # 获取接口并解析 $ref 引用
-./scripts/apifox get_path \
+python "$SKILL_PATH/scripts/apifox.py" get_path \
     --path "/api/v3/goods/stocks/check/orders" \
     --method POST \
     --include_refs true
@@ -95,43 +142,43 @@ pip3 install requests
 
 ```bash
 # 获取 Schema 定义
-./scripts/apifox get_schema --name CreateGoodsStockCheckOrderReq
+python "$SKILL_PATH/scripts/apifox.py" get_schema --name CreateGoodsStockCheckOrderReq
 ```
 
 ### 搜索接口
 
 ```bash
 # 搜索盘点相关接口
-./scripts/apifox search_paths --keyword "盘点"
+python "$SKILL_PATH/scripts/apifox.py" search_paths --keyword "盘点"
 
 # 搜索特定模块的接口
-./scripts/apifox search_paths --keyword "库存" --module api.stocks
+python "$SKILL_PATH/scripts/apifox.py" search_paths --keyword "库存" --module api.stocks
 
 # 按方法过滤
-./scripts/apifox search_paths --keyword "order" --method POST --limit 10
+python "$SKILL_PATH/scripts/apifox.py" search_paths --keyword "order" --method POST --limit 10
 ```
 
 ### 模块查询
 
 ```bash
 # 列出所有模块
-./scripts/apifox list_modules
+python "$SKILL_PATH/scripts/apifox.py" list_modules
 
 # 获取特定模块的所有接口
-./scripts/apifox get_module --module api.stocks
+python "$SKILL_PATH/scripts/apifox.py" get_module --module api.stocks
 ```
 
 ### 文档管理
 
 ```bash
 # 查看缓存状态
-./scripts/apifox status
+python "$SKILL_PATH/scripts/apifox.py" status
 
 # 刷新文档（从 Apifox 获取最新数据）
-./scripts/apifox refresh_oas
+python "$SKILL_PATH/scripts/apifox.py" refresh_oas
 
 # 清除缓存
-./scripts/apifox clear_cache --force
+python "$SKILL_PATH/scripts/apifox.py" clear_cache --force
 ```
 
 ## 输出格式
@@ -152,27 +199,6 @@ pip3 install requests
   "success": false,
   "error": "错误信息"
 }
-```
-
-## Claude 使用方式
-
-当用户需要查询 API 文档时：
-
-1. **理解需求**：确定要查询的接口或 Schema
-2. **构建命令**：根据需求选择合适的命令
-3. **执行脚本**：使用 Bash 工具运行
-4. **分析结果**：解析返回的接口/Schema 定义
-
-示例工作流：
-```
-用户: "查看盘点单接口的定义"
-
-Claude:
-1. ./scripts/apifox search_paths --keyword "盘点"
-2. 从结果中找到相关接口路径
-3. ./scripts/apifox get_path --path "/api/v3/goods/stocks/check/orders" --method POST
-4. 分析返回的请求体 CreateGoodsStockCheckOrderReq
-5. 如需查看 Schema: ./scripts/apifox get_schema --name CreateGoodsStockCheckOrderReq
 ```
 
 ## 缓存结构
@@ -203,27 +229,12 @@ cache/
 
 ```
 scripts/
-├── apifox              # 命令行工具入口
-├── apifox.py           # Python CLI 实现
+├── apifox.py           # Python CLI 实现（命令行入口）
 ├── apifox_client.py    # 客户端
 ├── cache_manager.py    # 缓存管理器
 ├── requirements.txt    # Python 依赖
 ├── check_env.py        # 环境检查脚本
 └── test_apifox.py      # 功能测试脚本
-```
-
-## 首次使用
-
-```bash
-# 配置环境变量后首次运行
-./scripts/apifox status
-
-# 自动从 Apifox 获取文档并建立缓存
-# 正在从 Apifox 获取项目 4105462 的 OpenAPI 文档...
-# 正在清空旧缓存...
-# 正在按模块拆分接口...
-# 正在保存 Schema（分组格式）...
-# 导入完成!
 ```
 
 ## 开发工具
@@ -233,7 +244,7 @@ scripts/
 检查环境配置和 API 连接状态：
 
 ```bash
-python3 scripts/check_env.py
+python "$SKILL_PATH/scripts/check_env.py"
 ```
 
 **检查项目**：
@@ -252,7 +263,7 @@ python3 scripts/check_env.py
 冒烟测试套件，验证核心功能正常：
 
 ```bash
-python3 scripts/test_apifox.py
+python "$SKILL_PATH/scripts/test_apifox.py"
 ```
 
 **测试内容**：
@@ -285,7 +296,7 @@ pip3 install -r scripts/requirements.txt
 vim scripts/cache_manager.py
 
 # 2. 运行测试（必须）
-python3 scripts/test_apifox.py
+python "$SKILL_PATH/scripts/test_apifox.py"
 
 # 3. 测试通过后提交
 git add scripts/cache_manager.py
