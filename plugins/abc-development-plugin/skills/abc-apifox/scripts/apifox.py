@@ -122,8 +122,10 @@ def main():
     p.add_argument('--method', required=True,
                    choices=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
                    help='请求方法')
-    p.add_argument('--include_refs', default='true',
-                   help='是否解析 $ref 引用')
+    p.add_argument('--include-refs', dest='include_refs', action='store_true',
+                   default=True, help='是否解析 $ref 引用 (默认: True)')
+    p.add_argument('--no-include-refs', dest='include_refs', action='store_false',
+                   help='不解析 $ref 引用')
 
     # get_schema
     p = subparsers.add_parser('get_schema', help='获取 Schema 定义')

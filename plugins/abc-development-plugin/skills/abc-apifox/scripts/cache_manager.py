@@ -50,26 +50,31 @@ class CacheManager:
         """获取元数据文件路径"""
         return os.path.join(self.cache_dir, "meta.json")
 
+    def _get_default_meta(self) -> Dict[str, Any]:
+        """获取默认元数据"""
+        return {
+            "version": "2.0",
+            "created_at": None,
+            "updated_at": None,
+            "total_paths": 0,
+            "total_schemas": 0,
+            "modules": {},
+            "schema_storage": "grouped",
+            "schema_groups": [],
+            "search_index": {}
+        }
+
     def load_meta(self) -> Dict[str, Any]:
         """加载元数据"""
         meta_file = self.get_meta_file()
         if not os.path.exists(meta_file):
-            return {
-                "version": "2.0",
-                "created_at": None,
-                "updated_at": None,
-                "total_paths": 0,
-                "total_schemas": 0,
-                "modules": {},
-                "path_to_module": {},
-                "schema_storage": "grouped",
-                "schema_groups": []
-            }
+            return self._get_default_meta()
         try:
             with open(meta_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except Exception:
-            return {}
+        except Exception as e:
+            print(f"警告: 无法加载元数据: {e}，使用默认值")
+            return self._get_default_meta()
 
     def save_meta(self, meta: Dict[str, Any]):
         """保存元数据"""
@@ -206,36 +211,34 @@ class CacheManager:
 
     def search_paths(self, keyword: str, module: str = None,
                     method: str = None, limit: int = None) -> List[Dict[str, Any]]:
-        """搜索接口路径"""
+        """搜索接口路径（使用搜索索引，避免加载模块文件）"""
         meta = self.load_meta()
         keyword_lower = keyword.lower()
         results = []
 
-        path_to_module = meta.get('path_to_module', {})
+        search_index = meta.get('search_index', {})
 
-        for path, modules in path_to_module.items():
-            for mod in modules:
-                if module and mod != module:
+        for path, methods in search_index.items():
+            for m, info in methods.items():
+                # 模块过滤
+                if module and info.get('module') != module:
                     continue
 
-                module_data = self.load_module(mod)
-                if not module_data:
+                # 方法过滤
+                if method and m.lower() != method.lower():
                     continue
 
-                for m, operation in module_data.get('paths', {}).get(path, {}).items():
-                    if method and m.lower() != method.lower():
-                        continue
-
-                    summary = operation.get('summary', '')
-                    if keyword_lower in path.lower() or keyword_lower in summary.lower():
-                        results.append({
-                            'path': path,
-                            'method': m.upper(),
-                            'module': mod,
-                            'summary': summary
-                        })
-                        if limit and len(results) >= limit:
-                            return results
+                # 关键词匹配
+                summary = info.get('summary', '')
+                if keyword_lower in path.lower() or keyword_lower in summary.lower():
+                    results.append({
+                        'path': path,
+                        'method': m.upper(),
+                        'module': info.get('module', ''),
+                        'summary': summary
+                    })
+                    if limit and len(results) >= limit:
+                        return results
         return results
 
     def list_modules(self) -> List[Dict[str, Any]]:
@@ -339,9 +342,9 @@ class CacheManager:
             "total_paths": len(paths),
             "total_schemas": len(schemas),
             "modules": {},
-            "path_to_module": {},
             "schema_storage": "grouped",
-            "schema_groups": []
+            "schema_groups": [],
+            "search_index": {}  # 搜索索引: path -> {method: {summary, module}}
         }
 
         # 按模块组织接口
@@ -360,10 +363,13 @@ class CacheManager:
                 module_paths[module]['paths'][path][method] = operation
                 module_paths[module]['count'] += 1
 
-                if path not in meta['path_to_module']:
-                    meta['path_to_module'][path] = []
-                if module not in meta['path_to_module'][path]:
-                    meta['path_to_module'][path].append(module)
+                # 构建搜索索引
+                if path not in meta['search_index']:
+                    meta['search_index'][path] = {}
+                meta['search_index'][path][method] = {
+                    'summary': operation.get('summary', ''),
+                    'module': module
+                }
 
         # 保存模块文件
         print("正在保存模块文件...")
