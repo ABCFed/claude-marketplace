@@ -1,3 +1,8 @@
+---
+name: sls-trace-analyzer
+description: 根据 traceId 或 URL（带时间戳）查询阿里云日志服务 (SLS) 获取日志，分析日志内容，定位代码中的问题。
+---
+
 # SLS Trace Analyzer Skill
 
 根据 traceId 或 URL（带时间戳）查询阿里云日志服务 (SLS) 获取日志，分析日志内容，定位代码中的问题。
