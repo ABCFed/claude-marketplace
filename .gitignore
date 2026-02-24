@@ -53,5 +53,11 @@ temp/
 *.tar.gz
 *.rar
 /.claude/settings.local.json
+
+# Apifox API cache
 /plugins/abc-development-plugin/skills/apifox/cache/oas.json
 /plugins/abc-development-plugin/skills/apifox/cache/oas_meta.json
+
+# ABC Apifox cache
+/plugins/abc-development-plugin/skills/abc-apifox/cache/
+/plugins/abc-development-plugin/skills/abc-apifox/**/__pycache__/
