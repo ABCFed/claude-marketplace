@@ -1,0 +1,2 @@
+# ABC Apifox Skill 依赖
+requests>=2.25.0

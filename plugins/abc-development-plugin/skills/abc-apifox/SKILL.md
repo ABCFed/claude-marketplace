@@ -206,7 +206,10 @@ scripts/
 ├── apifox              # 命令行工具入口
 ├── apifox.py           # Python CLI 实现
 ├── apifox_client.py    # 客户端
-└── cache_manager.py    # 缓存管理器
+├── cache_manager.py    # 缓存管理器
+├── requirements.txt    # Python 依赖
+├── check_env.py        # 环境检查脚本
+└── test_apifox.py      # 功能测试脚本
 ```
 
 ## 首次使用
@@ -222,3 +225,74 @@ scripts/
 # 正在保存 Schema（分组格式）...
 # 导入完成!
 ```
+
+## 开发工具
+
+### 环境检查 (`check_env.py`)
+
+检查环境配置和 API 连接状态：
+
+```bash
+python3 scripts/check_env.py
+```
+
+**检查项目**：
+- 环境变量是否配置
+- Python 依赖是否安装
+- 缓存状态
+- API 连接测试
+
+**使用场景**：
+- 首次配置后验证环境
+- API 连接异常时诊断
+- 修改环境变量后确认生效
+
+### 功能测试 (`test_apifox.py`)
+
+冒烟测试套件，验证核心功能正常：
+
+```bash
+python3 scripts/test_apifox.py
+```
+
+**测试内容**：
+- 缓存加载
+- 搜索性能（平均应 < 100ms）
+- 模块过滤
+- 方法过滤
+- 接口详情获取
+- Schema 获取
+- 模块列表
+
+**使用场景**：
+- **修改代码后必须运行**，确保功能正常
+- 部署前的回归测试
+- 性能退化检测
+
+### 依赖安装 (`requirements.txt`)
+
+```bash
+# 安装依赖
+pip3 install -r scripts/requirements.txt
+```
+
+## 开发工作流
+
+修改功能后必须执行冒烟测试：
+
+```bash
+# 1. 修改代码
+vim scripts/cache_manager.py
+
+# 2. 运行测试（必须）
+python3 scripts/test_apifox.py
+
+# 3. 测试通过后提交
+git add scripts/cache_manager.py
+git commit -m "fix: ..."
+```
+
+**测试失败时**：
+- 检查修改是否破坏了现有功能
+- 运行 `check_env.py` 诊断环境问题
+- 修复后重新测试直到通过
