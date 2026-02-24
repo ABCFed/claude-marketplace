@@ -13,7 +13,7 @@
 ```bash
 # 安装单个 skill
 npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/abc-apifox
 npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
 npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
 npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
@@ -93,13 +93,13 @@ source ~/.zshrc
 
 ---
 
-### apifox
+### abc-apifox
 
-ABC 医疗云 API 文档查询工具，读取和查询 ABC API 的 OpenAPI 规范文档（4,000+ 接口）。
+ABC 医疗云 API 文档查询工具 V2，读取和查询 ABC API 的 OpenAPI 规范文档（5000+ 接口）。采用按模块拆分的缓存结构，搜索性能提升 100+ 倍。
 
 **安装**：
 ```bash
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/apifox
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/abc-apifox
 ```
 
 **准备**：
@@ -108,15 +108,20 @@ npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/api
 export APIFOX_ACCESS_TOKEN="your_apifox_token_here"
 export APIFOX_PROJECT_ID="4105462"  # 可选，默认为 4105462
 source ~/.zshrc
+
+# 安装依赖
+pip3 install requests
 ```
 
-**触发关键词**：API、接口、Apifox、OpenAPI、接口文档
+**触发关键词**：API、接口、Apifox、OpenAPI、接口文档、ABC API
 
 **功能特性**：
-- 接口查询 - 按路径、方法、模块搜索接口
-- 接口详情 - 获取完整定义（自动解析 $ref）
+- 接口查询 - 按路径、方法、模块搜索接口（搜索速度 ~6ms）
+- 接口详情 - 获取完整定义（自动解析 $ref 引用）
+- Schema 查询 - 获取数据模型定义
 - 统计分析 - 接口总数、模块分布、方法统计
-- 文档导出 - 导出 JSON/Markdown 摘要
+- 模块管理 - 按模块列出所有接口
+- 开发工具 - 环境检查、冒烟测试套件
 
 ---
 
@@ -305,7 +310,7 @@ npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tap
 │   ├── jenkins-deploy/           # Jenkins 发布技能
 │   ├── git-flow/                 # Git Flow 工作流助手
 │   ├── tapd/                     # TAPD 集成（从 plugins 迁移）
-│   ├── apifox/                   # API 文档查询（从 plugins 迁移）
+│   ├── abc-apifox/               # ABC API 文档查询 V2
 │   ├── codeup/                   # Codeup 仓库管理（从 plugins 迁移）
 │   ├── modao-capture/            # 墨刀原型稿抓取
 │   ├── sls-trace-analyzer/       # SLS 日志追踪分析

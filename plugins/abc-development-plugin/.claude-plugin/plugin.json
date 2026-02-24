@@ -1,6 +1,6 @@
 {
   "name": "abc-development-plugin",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Assist with ABC development flow",
   "author": {
     "name": "ABC Team",
@@ -10,6 +10,8 @@
   "keywords": [
     "tapd",
     "apifox",
+    "abc-apifox",
+    "abc-api",
     "codeup",
     "jenkins",
     "abc-git-flow",
