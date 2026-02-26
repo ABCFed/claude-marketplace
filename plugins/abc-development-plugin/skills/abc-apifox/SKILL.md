@@ -42,14 +42,11 @@ pip3 install requests
 首次使用前需要初始化缓存，只需执行一次：
 
 ```bash
-# 获取 skill 安装路径
-SKILL_PATH=$(find ~ -type d -name "abc-apifox" -path "*/skills/*" 2>/dev/null | head -1)
-
 # 1. 运行环境检查（验证配置）
-python3 "$SKILL_PATH/scripts/check_env.py"
+python3 scripts/check_env.py
 
 # 2. 初始化缓存
-python3 "$SKILL_PATH/scripts/apifox.py" refresh_oas
+python3 scripts/apifox.py refresh_oas
 ```
 
 缓存初始化后，后续查询直接从本地读取，无需重复初始化。
@@ -65,22 +62,8 @@ python3 "$SKILL_PATH/scripts/apifox.py" refresh_oas
 
 ## 使用方式
 
-**重要**：执行脚本时需要先获取当前 skill 的安装路径。
-
 ```bash
-# 获取 skill 安装路径
-SKILL_PATH=$(find ~ -type d -name "abc-apifox" -path "*/skills/*" 2>/dev/null | head -1)
-
-# 执行命令（优先使用 python3）
-python3 "$SKILL_PATH/scripts/apifox.py" <command> [参数]
-```
-
-**环境要求**：Python 3.0 或更高版本。
-
-如果 `python3` 命令不可用，可以尝试使用 `python`：
-
-```bash
-python3 "$SKILL_PATH/scripts/apifox.py" <command> [参数]
+python3 scripts/apifox.py <command> [参数]
 ```
 
 所有命令默认返回 JSON 格式输出。
@@ -113,12 +96,12 @@ python3 "$SKILL_PATH/scripts/apifox.py" <command> [参数]
 
 ```bash
 # 错误做法：直接查询可能不存在的接口
-python3 "$SKILL_PATH/scripts/apifox.py" get_path --path "/rpc/xxx/yyy" --method POST
+python3 scripts/apifox.py get_path --path "/rpc/xxx/yyy" --method POST
 
 # 正确做法：先搜索确认存在
-python3 "$SKILL_PATH/scripts/apifox.py" search_paths --keyword "xxx"
+python3 scripts/apifox.py search_paths --keyword "xxx"
 # 然后根据搜索结果获取详情
-python3 "$SKILL_PATH/scripts/apifox.py" get_path --path "/rpc/xxx/yyy" --method GET
+python3 scripts/apifox.py get_path --path "/rpc/xxx/yyy" --method GET
 ```
 
 ### 2. HTTP 方法判断
@@ -139,12 +122,12 @@ python3 "$SKILL_PATH/scripts/apifox.py" get_path --path "/rpc/xxx/yyy" --method 
 
 ```bash
 # 获取接口详情（自动推断模块）
-python3 "$SKILL_PATH/scripts/apifox.py" get_path \
+python3 scripts/apifox.py get_path \
     --path "/api/v3/goods/stocks/check/orders" \
     --method POST
 
 # 获取接口并解析 $ref 引用
-python3 "$SKILL_PATH/scripts/apifox.py" get_path \
+python3 scripts/apifox.py get_path \
     --path "/api/v3/goods/stocks/check/orders" \
     --method POST \
     --include_refs true
@@ -154,43 +137,43 @@ python3 "$SKILL_PATH/scripts/apifox.py" get_path \
 
 ```bash
 # 获取 Schema 定义
-python3 "$SKILL_PATH/scripts/apifox.py" get_schema --name CreateGoodsStockCheckOrderReq
+python3 scripts/apifox.py get_schema --name CreateGoodsStockCheckOrderReq
 ```
 
 ### 搜索接口
 
 ```bash
 # 搜索盘点相关接口
-python3 "$SKILL_PATH/scripts/apifox.py" search_paths --keyword "盘点"
+python3 scripts/apifox.py search_paths --keyword "盘点"
 
 # 搜索特定模块的接口
-python3 "$SKILL_PATH/scripts/apifox.py" search_paths --keyword "库存" --module api.stocks
+python3 scripts/apifox.py search_paths --keyword "库存" --module api.stocks
 
 # 按方法过滤
-python3 "$SKILL_PATH/scripts/apifox.py" search_paths --keyword "order" --method POST --limit 10
+python3 scripts/apifox.py search_paths --keyword "order" --method POST --limit 10
 ```
 
 ### 模块查询
 
 ```bash
 # 列出所有模块
-python3 "$SKILL_PATH/scripts/apifox.py" list_modules
+python3 scripts/apifox.py list_modules
 
 # 获取特定模块的所有接口
-python3 "$SKILL_PATH/scripts/apifox.py" get_module --module api.stocks
+python3 scripts/apifox.py get_module --module api.stocks
 ```
 
 ### 文档管理
 
 ```bash
 # 查看缓存状态
-python3 "$SKILL_PATH/scripts/apifox.py" status
+python3 scripts/apifox.py status
 
 # 刷新文档（从 Apifox 获取最新数据）
-python3 "$SKILL_PATH/scripts/apifox.py" refresh_oas
+python3 scripts/apifox.py refresh_oas
 
 # 清除缓存
-python3 "$SKILL_PATH/scripts/apifox.py" clear_cache --force
+python3 scripts/apifox.py clear_cache --force
 ```
 
 ## 输出格式
@@ -256,7 +239,7 @@ scripts/
 检查环境配置和 API 连接状态：
 
 ```bash
-python3 "$SKILL_PATH/scripts/check_env.py"
+python3 scripts/check_env.py
 ```
 
 **检查项目**：
@@ -275,7 +258,7 @@ python3 "$SKILL_PATH/scripts/check_env.py"
 冒烟测试套件，验证核心功能正常：
 
 ```bash
-python3 "$SKILL_PATH/scripts/test_apifox.py"
+python3 scripts/test_apifox.py
 ```
 
 **测试内容**：
@@ -308,7 +291,7 @@ pip3 install -r scripts/requirements.txt
 vim scripts/cache_manager.py
 
 # 2. 运行测试（必须）
-python "$SKILL_PATH/scripts/test_apifox.py"
+python3 scripts/test_apifox.py
 
 # 3. 测试通过后提交
 git add scripts/cache_manager.py
