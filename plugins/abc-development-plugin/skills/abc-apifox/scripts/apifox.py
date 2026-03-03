@@ -112,6 +112,55 @@ def cmd_clear_cache(args):
     cache.clear_all()
 
 
+def cmd_init(args):
+    """初始化环境"""
+    import subprocess
+
+    print("=" * 50)
+    print("开始初始化 abc-apifox...")
+    print("=" * 50)
+
+    # 1. 检查并安装依赖
+    print("\n[1/3] 检查 Python 依赖...")
+    try:
+        import requests
+        print("  ✓ requests 已安装")
+    except ImportError:
+        print("  → 正在安装 requests...")
+        subprocess.run([sys.executable, "-m", "pip", "install", "requests"], check=True)
+        print("  ✓ requests 安装完成")
+
+    # 2. 运行环境检查
+    print("\n[2/3] 运行环境检查...")
+    check_script = os.path.join(os.path.dirname(__file__), "check_env.py")
+    result = subprocess.run([sys.executable, check_script], capture_output=True, text=True)
+    print(result.stdout)
+    if result.returncode != 0:
+        print(f"  ⚠ 环境检查有警告，请确保配置正确")
+
+    # 3. 初始化缓存
+    print("\n[3/3] 初始化缓存（从 Apifox 下载文档）...")
+    client = ApifoxClient()
+    result = client.refresh_project_oas()
+    if result.get('success'):
+        data = result.get('data', {})
+        # 从缓存状态获取最新统计
+        cache = CacheManager()
+        status = cache.get_status()
+        cache_data = status.get('data', {})
+        print(f"  ✓ 缓存初始化完成")
+        print(f"    - 接口数量: {cache_data.get('paths_count', 'N/A')}")
+        print(f"    - Schema 数量: {cache_data.get('schemas_count', 'N/A')}")
+        print(f"    - 模块数量: {cache_data.get('modules_count', 'N/A')}")
+    else:
+        print(f"  ✗ 缓存初始化失败: {result.get('error', '未知错误')}")
+        sys.exit(1)
+
+    print("\n" + "=" * 50)
+    print("初始化完成！可以使用 abc-apifox 查询 API 了。")
+    print("=" * 50)
+
+
 def main():
     parser = argparse.ArgumentParser(description='ABC Apifox CLI')
     subparsers = parser.add_subparsers(dest='command', help='可用命令')
@@ -148,6 +197,9 @@ def main():
     # refresh_oas
     subparsers.add_parser('refresh_oas', help='刷新 OpenAPI 文档')
 
+    # init
+    subparsers.add_parser('init', help='初始化环境（安装依赖、检查配置、下载缓存）')
+
     # status
     subparsers.add_parser('status', help='查看缓存状态')
 
@@ -168,6 +220,7 @@ def main():
         'search_paths': cmd_search_paths,
         'list_modules': cmd_list_modules,
         'get_module': cmd_get_module,
+        'init': cmd_init,
         'refresh_oas': cmd_refresh_oas,
         'status': cmd_status,
         'clear_cache': cmd_clear_cache,

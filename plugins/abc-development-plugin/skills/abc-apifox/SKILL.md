@@ -29,27 +29,19 @@ pip3 install requests
 
 ### 首次使用：初始化缓存
 
-**方式一：使用快捷命令（Claude Code 专属）**
-
-在 Claude Code 中直接执行：
-
-```
-/abc-development-plugin:abc-apifox-init
-```
-
-**方式二：手动执行**
-
-首次使用前需要初始化缓存，只需执行一次：
+首次使用前需要初始化缓存（只需执行一次），执行以下命令：
 
 ```bash
-# 1. 运行环境检查（验证配置）
-python3 scripts/check_env.py
-
-# 2. 初始化缓存
-python3 scripts/apifox.py refresh_oas
+# 初始化环境（自动安装依赖、检查配置、下载缓存）
+python3 scripts/apifox.py init
 ```
 
-缓存初始化后，后续查询直接从本地读取，无需重复初始化。
+初始化过程会自动：
+1. 检查并安装 Python 依赖（requests）
+2. 运行环境检查（验证 APIFOX_ACCESS_TOKEN 配置）
+3. 从 Apifox 下载最新 API 文档并构建缓存
+
+缓存初始化后，后续查询直接从本地读取，无需重复初始化。如需更新缓存，可使用 `refresh_oas` 命令。
 
 ### 工作原理
 
@@ -84,6 +76,7 @@ python3 scripts/apifox.py <command> [参数]
 
 | 命令 | 说明 |
 |------|------|
+| `init` | 初始化环境（安装依赖、检查配置、下载缓存） |
 | `refresh_oas` | 刷新 OpenAPI 文档 |
 | `status` | 查看缓存状态 |
 | `clear_cache` | 清除本地缓存（需要 `--force`） |
@@ -166,6 +159,9 @@ python3 scripts/apifox.py get_module --module api.stocks
 ### 文档管理
 
 ```bash
+# 初始化环境（首次使用前必须执行）
+python3 scripts/apifox.py init
+
 # 查看缓存状态
 python3 scripts/apifox.py status
 
