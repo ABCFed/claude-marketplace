@@ -48,6 +48,8 @@ npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tap
 npx skills add ABCFed/claude-marketplace --list
 ```
 
+中文用户也可以通过 Skills宝 发现更多 skills：https://skilery.com
+
 ### 通过插件市场安装（仅 Claude Code）
 
 ```bash
