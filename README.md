@@ -12,14 +12,14 @@
 
 ```bash
 # 安装单个 skill
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/abc-apifox
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/modao-capture
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/sls-trace-analyzer
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-bug-analyzer
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/tapd
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/abc-apifox
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/codeup
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/jenkins-deploy
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/abc-git-flow
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/modao-capture
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/sls-trace-analyzer
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/tapd-bug-analyzer
 ```
 
 **常用选项**：
@@ -36,13 +36,13 @@ npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tap
 
 ```bash
 # 安装到用户目录
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --global
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/tapd --global
 
 # 指定 agent 安装
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --agent codex
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/tapd --agent codex
 
 # 跳过确认提示
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd --yes
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/tapd --yes
 
 # 列出仓库中所有可用 skills
 npx skills add ABCFed/claude-marketplace --list
@@ -59,7 +59,33 @@ claude
 
 # 安装 abc-development-plugin
 /plugin install abc-development-plugin@abc-claude-plugin-marketplace
+
+# 安装 Hermes Agent X/Twitter 自动化指导
+/plugin install hermes-tweet@abc-claude-plugin-marketplace
 ```
+
+### hermes-tweet
+
+Hermes Agent 的 X/Twitter 自动化插件指导，覆盖安装、运行时配置、工具顺序和安全门控。
+
+**安装**：
+```bash
+/plugin install hermes-tweet@abc-claude-plugin-marketplace
+```
+
+**准备**：
+```bash
+hermes plugins install Xquik-dev/hermes-tweet --enable
+export XQUIK_API_KEY="<your-xquik-api-key>"
+export HERMES_TWEET_ENABLE_ACTIONS="false"
+```
+
+**触发关键词**：Hermes Tweet、Xquik、Twitter、X、social automation、tweet
+
+**功能特性**：
+- `tweet_explore` - 离线搜索 Xquik 端点目录
+- `tweet_read` - 调用目录中的只读端点
+- `tweet_action` - 仅在显式启用操作门控后调用写入或私有端点
 
 ## 技能详情
 
@@ -69,7 +95,7 @@ TAPD 敏捷研发管理平台集成，通过 TAPD API 实现研发全流程管�
 
 **安装**：
 ```bash
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/tapd
 ```
 
 **准备**：
@@ -99,7 +125,7 @@ ABC 医疗云 API 文档查询工具 V2，读取和查询 ABC API 的 OpenAPI �
 
 **安装**：
 ```bash
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/abc-apifox
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/abc-apifox
 ```
 
 **准备**：
@@ -140,7 +166,7 @@ pip3 install requests
 
 **安装**：
 ```bash
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/codeup
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/codeup
 ```
 
 **准备**：
@@ -167,7 +193,7 @@ ABC Jenkins 项目发布技能，支持智能参数推断和交互式触发 Jenk
 
 **安装**：
 ```bash
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/jenkins-deploy
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/jenkins-deploy
 ```
 
 **准备**：
@@ -195,7 +221,7 @@ ABC Git Flow 工作流助手，帮助使用 abc-git-flow 工具管理 git 分支
 
 **安装**：
 ```bash
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/git-flow
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/abc-git-flow
 ```
 
 **准备**：
@@ -225,7 +251,7 @@ pip install requests
 
 **安装**：
 ```bash
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/modao-capture
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/modao-capture
 ```
 
 **准备**：
@@ -251,7 +277,7 @@ SLS 日志追踪分析工具，根据 traceId 或 URL 查询阿里云日志服�
 
 **安装**：
 ```bash
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/sls-trace-analyzer
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/sls-trace-analyzer
 ```
 
 **准备**：
@@ -288,7 +314,7 @@ TAPD Bug 单自动分析工具，从 Bug 链接出发，自动获取 Bug 详情�
 
 **安装**：
 ```bash
-npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/skills/tapd-bug-analyzer
+npx skills add https://github.com/ABCFed/claude-marketplace/tree/main/plugins/abc-development-plugin/skills/tapd-bug-analyzer
 ```
 
 **准备**：
