@@ -65,6 +65,33 @@
         "scaffold",
         "validation"
       ]
+    },
+    {
+      "name": "hermes-tweet",
+      "description": "Hermes Agent plugin guidance for X/Twitter search, monitoring, publishing, media, draws, and social automation through Xquik.",
+      "version": "0.1.6",
+      "author": {
+        "name": "Xquik"
+      },
+      "source": "./plugins/hermes-tweet",
+      "category": "automation",
+      "tags": [
+        "hermes-agent",
+        "xquik",
+        "twitter",
+        "x",
+        "social-media",
+        "automation"
+      ],
+      "keywords": [
+        "hermes-agent",
+        "hermes-plugin",
+        "xquik",
+        "twitter",
+        "x",
+        "social-media",
+        "automation"
+      ]
     }
   ]
 }
