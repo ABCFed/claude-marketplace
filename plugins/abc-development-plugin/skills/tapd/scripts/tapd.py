@@ -185,8 +185,8 @@ def cmd_get_stories_or_tasks(args):
     if args.id and result.get('data'):
         for item in result['data']:
             story = item.get('Story', {})
-            description = story.get('description', '')
-            # 提取图片路径
+            description = story.get('description') or ''
+            # 提取图片路径（description 可能为 null：TAPD 对空描述返回 null，不是空串）
             img_paths = re.findall(r'<img[^>]+src="([^"]+)"', description)
             if img_paths:
                 images = []
