@@ -533,12 +533,16 @@ class TAPDClient:
         """获取 URL 模板"""
         is_mini = self.check_mini_project(workspace_id)
         if entity_type == 'tasks':
-            return f'{tapd_base_url}/{workspace_id}/prong/tasks/view/{{id}}'
+            # 2026-09 起 TAPD 前端换代，旧路由 /{workspace_id}/prong/tasks/view/ 已失效（点开报错），
+            # 统一改用 tapd_fe 形式。注意各实体的**尾段不同**：story/bug 用 detail，
+            # 迭代（iteration）用 card —— 别按同族形式互相套用。
+            return f'{tapd_base_url}/tapd_fe/{workspace_id}/task/detail/{{id}}'
         else:
             if is_mini:
                 return f'{tapd_base_url}/tapd_fe/t/index/{workspace_id}?workitemId={{id}}'
             else:
-                return f'{tapd_base_url}/{workspace_id}/prong/stories/view/{{id}}'
+                # 见上：旧路由 /{workspace_id}/prong/stories/view/ 已失效，改用 tapd_fe 形式
+                return f'{tapd_base_url}/tapd_fe/{workspace_id}/story/detail/{{id}}'
 
     def check_mini_project(self, workspace_id: int) -> bool:
         """判断是否轻协作项目"""

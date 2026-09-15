@@ -441,7 +441,9 @@ def cmd_create_bug(args):
 
     tapd_base_url = get_tapd_base_url()
     bug_id = result.get("data", {}).get("Bug", {}).get("id")
-    url = f"{tapd_base_url}/{args.workspace_id}/bugtrace/bugs/view/{bug_id}" if bug_id else ""
+    # 2026-09 起 TAPD 前端换代，旧路由 /{workspace_id}/bugtrace/bugs/view/ 已失效（点开报错），
+    # 改用 tapd_fe 形式（已实测有效）。注意 id 必须是 19 位长 id，短号同样打不开。
+    url = f"{tapd_base_url}/tapd_fe/{args.workspace_id}/bug/detail/{bug_id}" if bug_id else ""
 
     output = {
         "url": url,
@@ -541,7 +543,9 @@ def cmd_create_iteration(args):
 
     tapd_base_url = get_tapd_base_url()
     iteration_id = result.get("data", {}).get("Iteration", {}).get("id")
-    url = f"{tapd_base_url}/{args.workspace_id}/prong/iterations/card_view/{iteration_id}" if iteration_id else ""
+    # 2026-09 起 TAPD 前端换代，旧路由 /{workspace_id}/prong/iterations/card_view/ 已失效。
+    # ★ 迭代的新形态尾段是 **card**（不是 detail）—— 与 story/bug/task 不同，别按同族形式照推。
+    url = f"{tapd_base_url}/tapd_fe/{args.workspace_id}/iteration/card/{iteration_id}" if iteration_id else ""
 
     output = {
         "url": url,

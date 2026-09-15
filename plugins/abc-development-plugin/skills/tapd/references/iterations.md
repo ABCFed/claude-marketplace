@@ -63,7 +63,20 @@ update_iteration(
 
 ## URL 格式
 
-迭代链接: `{tapd_base_url}/{workspace_id}/prong/iterations/card_view/{id}`
+迭代链接: `{tapd_base_url}/tapd_fe/{workspace_id}/iteration/card/{19位id}`
+
+★★ **迭代的尾段与 story/bug 不同，别按同族形式照推**：
+
+| 实体 | 实测形态 |
+|---|---|
+| story / bug | `/tapd_fe/{ws}/{story\|bug}/detail/{id}` ← 尾段 `detail` |
+| **iteration** | `/tapd_fe/{ws}/iteration/card/{id}` ← 尾段 **`card`** |
+
+所以 `/iteration/detail/{id}` 这类「看着对称」的拼法是**错的**；旧格式
+`/{workspace_id}/prong/iterations/card_view/{id}` 也已失效（点开报错）。
+
+★ 通用教训：`tapd_fe` 只是「路由前缀已换代」，**每个实体的尾段各写各的** ——
+拿不准就自己在浏览器里点开一次确认，或向用户要一条他点开过的链接。
 
 ## 使用迭代获取需求
 
